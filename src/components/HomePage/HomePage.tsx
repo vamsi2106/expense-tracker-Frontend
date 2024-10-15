@@ -1,10 +1,14 @@
 // src/components/HomePage.tsx
-import React from 'react'
+import React from "react";
+import Logout from "../authentication/Logout"; // Import the Logout component
 
-export default function HomePage() {
+const HomePage: React.FC = () => {
   return (
     <div>
-      Home Page
+      <h1>Welcome to the Home Page!</h1>
+      <Logout /> {/* Include the Logout button */}
     </div>
-  )
-}
+  );
+};
+
+export default HomePage;
