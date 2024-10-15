@@ -1,27 +1,33 @@
-// src/routes/ProtectedRoute.tsx
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { getCookie } from "../utils/cookieUtils"; // Utility function to get cookies
+import { getCookie } from "../utils/cookieUtils";
 
 interface ProtectedRouteProps {
   element: JSX.Element;
-  role?: string;
+  requiredRole?: string; // Role needed to access the route
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element, role }) => {
-  const token = getCookie("token"); // Assuming token is stored in cookies
-  const userRole = getCookie("role"); // Assuming role is stored in cookies
-  console.log("token", token);
-  console.log("UserRole", userRole);
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  element,
+  requiredRole,
+}) => {
+  const token = getCookie("token"); // Get token from cookies
+  const userRole = getCookie("role"); // Get role from cookies
+
+  // If the token doesn't exist, redirect to the login page
   if (!token) {
-    console.log();
-    // If the token doesn't exist, redirect to the login page
     return <Navigate to="/login" />;
   }
 
-  if (role && role !== userRole) {
-    // If role exists and doesn't match the user's role, redirect to unauthorized page or home
-    return <Navigate to="/" />;
+  // If a required role is specified, check if the user's role matches it
+  if (requiredRole && userRole !== requiredRole) {
+    // Redirect to a route based on the user's role
+    // For example, if the user is an admin but tries to access a user page
+    return userRole === "admin" ? (
+      <Navigate to="/admin" />
+    ) : (
+      <Navigate to="/user" />
+    );
   }
 
   // If authenticated and role matches, render the component
