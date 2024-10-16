@@ -24,18 +24,21 @@ function Runway() {
             }
           );
           // Destructure necessary data from response
-          const { token, role, name } = response.data;
-          console.log(
-            "responseData ",
-            `${{ usertoken: token, userName: name, Role: role }}`
-          );
+          console.log(response);
+
+          // profileImage: null;
+          // role: "admin";
+          // token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhZjZjODNlOC0wZDdlLTQ4NWMtOTQ3ZC1lMTNjMTQwYmQ4NDAiLCJ1c2VybmFtZSI6IlZhbXNpIiwidXNlckltYWdlVXJsIjpudWxsLCJlbWFpbCI6Im5hZ2FzYWkudmFtc2lAZzdjci5jb20iLCJyb2xlIjoiYWRtaW4iLCJjcmVhdGVkQXQiOiIyMDI0LTEwLTE0VDE2OjU0OjIzLjQyM1oiLCJ1cGRhdGVkQXQiOiIyMDI0LTEwLTE0VDE2OjU0OjIzLjQyM1oiLCJpYXQiOjE3Mjg5OTc2NDUsImV4cCI6MTcyOTAwMTI0NX0.YqSTRSLB1KptTo131D9WQ_TFxBTSWaT8s_hcBYF_lgM";
+          // userEmail: "nagasai.vamsi@g7cr.com";
+          // username: "Vamsi";
+          const { token, role, username, userEmail } = response.data;
 
           // Store token and role in cookies
           setCookie("token", token, 3);
           setCookie("role", role, 3);
 
           // Dispatch the user data to Redux store
-          dispatch(setUser({ token, role, name }));
+          dispatch(setUser({ token, role, username, userEmail }));
 
           // Redirect based on the user's role
           if (role === "admin") {

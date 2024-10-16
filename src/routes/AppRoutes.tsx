@@ -4,9 +4,10 @@ import { Routes, Route } from "react-router-dom";
 import Home from "../components/HomePage/HomePage";
 import LoginPage from "../components/authentication/LoginPage";
 import Runway from "../components/authentication/Runaway";
-import AdminDashboard from "../components/admin/AdminDashboard"; // Import your Admin Dashboard component
+//import AdminDashboard from "../components/admin/AdminDashboard"; // Import your Admin Dashboard component
 import UserDashboard from "../components/user/UserDashboard"; // Import your User Dashboard component
 import ProtectedRoute from "./ProtectedRoute";
+import AdminPanel from "../components/admin/AdminDashboard";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -19,9 +20,9 @@ const AppRoutes: React.FC = () => {
       <Route path="/runway" element={<Runway />} />
       {/* Admin routes */}
       <Route
-        path="/admin"
+        path="/admin/*"
         element={
-          <ProtectedRoute element={<AdminDashboard />} requiredRole="admin" />
+          <ProtectedRoute element={<AdminPanel />} requiredRole="admin" />
         }
       />
       {/* User routes */}
