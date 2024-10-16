@@ -9,6 +9,7 @@ import UserDashboard from "../components/user/UserDashboard"; // Import your Use
 import ProtectedRoute from "./ProtectedRoute";
 import AdminPanel from "../components/admin/AdminDashboard";
 import { ExpensesHome } from "../screen/Home/ExpensesHome";
+import { Dashboard } from "../screen/Dashboard/dashboard";
 
 
 const AppRoutes: React.FC = () => {
@@ -40,6 +41,11 @@ const AppRoutes: React.FC = () => {
         path='/user/home'
         element={
           <ExpensesHome/>
+        }/>
+      <Route
+        path='/user/dashboard'
+        element={
+          <Dashboard/>
         }/>
     </Routes>
   );
