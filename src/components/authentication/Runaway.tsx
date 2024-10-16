@@ -1,18 +1,25 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { setCookie } from "../../utils/cookieUtils";
+import { setCookie, removeCookie } from "../../utils/cookieUtils";
 import { useDispatch } from "react-redux";
-import { setUser } from "../../store/userSlice"; // Import the setUser action
+import { setUser } from "../../store/userSlice";
 import LoadingBar, { LoadingBarRef } from "react-top-loading-bar";
 import { Grid } from "react-loader-spinner";
 
 function Runway() {
   const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useDispatch(); // Hook for dispatching actions
+  const dispatch = useDispatch();
   const [progress, setProgress] = useState(0);
-  const loadingBarRef = useRef<LoadingBarRef>(null); // Correct type
+  const loadingBarRef = useRef<LoadingBarRef>(null);
+
+  const tenantId = "380a88f6-5447-406c-bebb-2c908f53f0a3"; // Your tenant ID
+  const microsoftLogoutUrl = `https://login.microsoftonline.com/${
+    process.env.REACT_APP_TENANT_ID
+  }/oauth2/v2.0/logout?post_logout_redirect_uri=${encodeURIComponent(
+    "http://localhost:3000/login"
+  )}&prompt=none`; // Ensure full logout
 
   useEffect(() => {
     const query = new URLSearchParams(location.search);
@@ -20,23 +27,27 @@ function Runway() {
 
     if (code) {
       const exchangeCodeForTokens = async () => {
-        setProgress(20); // Start the progress bar
-        loadingBarRef.current?.continuousStart(); // Start the loading bar
+        setProgress(20);
+        loadingBarRef.current?.continuousStart();
 
         try {
           const response = await axios.post(
             "http://localhost:5000/auth/callback",
-            {
-              code,
-            }
+            { code }
           );
-          console.log(response);
-          // if (response.data.error && response.data.redirect) {
-          //   // User not found, redirect to login page
-          //   alert("User not found. Redirecting to login page.");
-          //   navigate("/login");
-          //   return;
-          // } else {
+
+          if (response.data.error && response.data.redirect) {
+            // Automatically log out from both Microsoft and your app if user is not found
+            removeCookie("token");
+            removeCookie("role");
+            localStorage.clear();
+            sessionStorage.clear();
+
+            // Redirect to Microsoft logout URL to clear SSO session and prompt for account selection
+            window.location.href = microsoftLogoutUrl;
+            return;
+          }
+
           const { token, role, username, userEmail } = response.data;
 
           setCookie("token", token, 3);
@@ -44,10 +55,9 @@ function Runway() {
 
           dispatch(setUser({ token, role, username, userEmail }));
 
-          setProgress(100); // Complete the progress bar
-          loadingBarRef.current?.complete(); // Complete the loading bar
-          // Redirect based on the user's role
-          // Uncomment and modify this according to your application's logic
+          setProgress(100);
+          loadingBarRef.current?.complete();
+
           if (role === "admin") {
             navigate("/admin");
           } else if (role === "user") {
@@ -56,11 +66,11 @@ function Runway() {
             console.error("Invalid role.");
             navigate("/login");
           }
-          // }
         } catch (e) {
           console.error(e);
-          setProgress(100); // Complete in case of error
+          setProgress(100);
           loadingBarRef.current?.complete();
+          navigate("/login");
         }
       };
 
