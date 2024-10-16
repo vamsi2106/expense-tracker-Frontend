@@ -14,6 +14,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const token = getCookie("token"); // Get token from cookies
   const userRole = getCookie("role"); // Get role from cookies
 
+  console.log("token", token);
+  console.log("user role", userRole);
+
   // If the token doesn't exist, redirect to the login page
   if (!token) {
     return <Navigate to="/login" />;
@@ -23,11 +26,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   if (requiredRole && userRole !== requiredRole) {
     // Redirect to a route based on the user's role
     // For example, if the user is an admin but tries to access a user page
-    return userRole === "admin" ? (
-      <Navigate to="/admin" />
-    ) : (
-      <Navigate to="/user" />
-    );
+    if (userRole === "admin") {
+      return <Navigate to="/admin" />;
+    } else if (userRole === "user") {
+      return <Navigate to="/user" />;
+    } else {
+      return <Navigate to="/login" />;
+    }
   }
 
   // If authenticated and role matches, render the component
