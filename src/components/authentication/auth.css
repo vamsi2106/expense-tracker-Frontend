@@ -91,6 +91,12 @@ a {
   transition: transform 80ms ease-in;
 }
 
+.login-button:disabled {
+  background-color: #d3d3d3; /* Light gray for disabled */
+  color: #a9a9a9; /* Darker gray for text */
+  cursor: not-allowed;
+}
+
 .login-button:active {
   transform: scale(0.95);
 }
