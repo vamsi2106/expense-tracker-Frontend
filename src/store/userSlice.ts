@@ -1,15 +1,19 @@
+
+// src/store/userSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface UserState {
   token: string | null;
   role: string | null;
-  name: string | null;
+  username: string | null;
+  userEmail: string | null;
 }
 
 const initialState: UserState = {
   token: null,
   role: null,
-  name: null,
+  username: null,
+  userEmail: null,
 };
 
 const userSlice = createSlice({
@@ -18,16 +22,23 @@ const userSlice = createSlice({
   reducers: {
     setUser: (
       state,
-      action: PayloadAction<{ token: string; role: string; name: string }>
+      action: PayloadAction<{
+        token: string;
+        role: string;
+        username: string;
+        userEmail: string;
+      }>
     ) => {
       state.token = action.payload.token;
       state.role = action.payload.role;
-      state.name = action.payload.name;
+      state.username = action.payload.username;
+      state.userEmail = action.payload.userEmail;
     },
     logout: (state) => {
       state.token = null;
       state.role = null;
-      state.name = null;
+      state.username = null;
+      state.userEmail = null;
     },
   },
 });
