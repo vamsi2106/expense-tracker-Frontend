@@ -44,7 +44,7 @@ function Runway() {
           //   navigate("/login");
           //   return;
           // } else {
-          const { token, role, username, userEmail } = response.data;
+          const { token, role, username, userEmail } = response.data as AuthResponse;
 
           setCookie("token", token, 3);
           setCookie("role", role, 3);
