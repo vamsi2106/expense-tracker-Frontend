@@ -14,7 +14,7 @@ const RemoveUser: React.FC = () => {
   const handleRemove = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("state email", email);
-    const user = users.find((user) => user.email === email); // Find user by email
+    const user = users.find((user: any) => user.email === email); // Find user by email
     const { userId }: any = user;
     console.log("handleremove", user);
 

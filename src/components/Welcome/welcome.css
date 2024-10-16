@@ -1,0 +1,12 @@
+/* Welcome.css */
+.welcome-container {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+
+      
+  }
+  
+  .welcome-gif {
+    max-width: 100vw;
+    height: auto;
+    margin-bottom: 20px;
+  }

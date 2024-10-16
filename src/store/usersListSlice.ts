@@ -15,7 +15,7 @@ export const fetchUsers = createAsyncThunk(
 );
 
 interface UsersListState {
-  users: Array<{ id: string; username: string; email: string; role: string }>;
+  users: [];
   loading: boolean;
   error: string | null;
 }

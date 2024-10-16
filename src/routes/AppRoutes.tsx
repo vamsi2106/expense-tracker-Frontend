@@ -8,6 +8,8 @@ import Runway from "../components/authentication/Runaway";
 import UserDashboard from "../components/user/UserDashboard"; // Import your User Dashboard component
 import ProtectedRoute from "./ProtectedRoute";
 import AdminPanel from "../components/admin/AdminDashboard";
+import { ExpensesHome } from "../screen/Home/ExpensesHome";
+
 
 const AppRoutes: React.FC = () => {
   return (
@@ -33,6 +35,12 @@ const AppRoutes: React.FC = () => {
         }
       />
       {/* Add more protected routes as needed */}
+      {/*Routes added by nagasritha*/}
+      <Route
+        path='/user/home'
+        element={
+          <ExpensesHome/>
+        }/>
     </Routes>
   );
 };
