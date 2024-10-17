@@ -1,4 +1,4 @@
-// src/store/index.ts
+//src/store/index.ts
 import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
@@ -23,7 +23,7 @@ const store = configureStore({
     user: persistedUserReducer,
     usersList: usersListReducer,
     expenses: expensesReducer, // Add your slices here
-    files : filesReducer// Add your new slice here
+    files: filesReducer, // Add your new slice here
   },
 });
 

@@ -1,0 +1,56 @@
+.navbar {
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-container {
+  max-width: 1120px; /* Same as max-w-7xl */
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.navbar-content {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px; /* Same as h-16 */
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-title {
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 600; /* font-semibold */
+  color: #1f2937; /* text-gray-800 */
+}
+
+/* User section styling */
+.navbar-user {
+  display: flex;
+  align-items: center;
+  margin-left: 24px; /* ml-6 */
+}
+
+.navbar-username {
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500; /* font-medium */
+  color: #374151; /* text-gray-700 */
+  margin-right: 8px; /* mr-2 */
+}
+
+.navbar-avatar {
+  background-color: #e5e7eb; /* bg-gray-200 */
+  border-radius: 50%; /* rounded-full */
+  padding: 8px; /* p-2 */
+}
+
+.avatar-icon {
+  height: 24px; /* h-6 */
+  width: 24px; /* w-6 */
+  color: #4b5563; /* text-gray-600 */
+}

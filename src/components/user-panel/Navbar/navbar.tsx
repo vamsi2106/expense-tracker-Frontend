@@ -1,10 +1,14 @@
-import React from "react";
-import { Link } from "react-router-dom";
-export const Navbar = ()=>{
-    return (
-        <nav className='navbar bg-dark shadow p-3 d-flex gap-2'>
-            <p><b><Link to='/user/home'  className="text-white text-decoration-none">Expense Tracker</Link></b></p>
-            <p><b><Link to="/user/dashboard" className="text-white text-decoration-none">Dashboard</Link></b></p>
-        </nav>
-    )
-}
+import { User } from "lucide-react";
+export const Navbar = () => {
+  return (
+    <nav className="navbar">
+      <div className="navbar-brand">Expense Tracker</div>
+      <div className="navbar-user">
+        <span>John Doe</span>
+        <div className="user-avatar">
+          <User className="avatar-icon" />
+        </div>
+      </div>
+    </nav>
+  );
+};

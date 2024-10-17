@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navbar } from "../../components/user-panel/Navbar/navbar";
+import { Navbar } from "../../user-panel/Navbar/navbar";
 
 export const Dashboard = () => {
   const tabs = {

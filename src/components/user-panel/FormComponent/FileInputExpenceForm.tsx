@@ -11,6 +11,7 @@ const FileExpenceInputForm = () => {
   console.log(message, error);
   let { expenses } = useSelector((state: any) => state.expenses);
   console.log(expenses);
+  const userId = "yourUserId"; // Replace with the actual userId
 
   // Define Yup validation schema
   const validationSchema = Yup.object({
@@ -30,9 +31,11 @@ const FileExpenceInputForm = () => {
     formData.append("file", values.file);
 
     // Dispatch the createFile action to upload the file
-    let result = await dispatch<any>(createFile(formData));
+    let result = await dispatch<any>(
+      createFile({ userId, fileData: formData })
+    );
     if (createFile.fulfilled.match(result)) {
-      dispatch<any>(fetchExpenses());
+      dispatch<any>(fetchExpenses({ userId }));
     }
   };
 
@@ -56,7 +59,7 @@ const FileExpenceInputForm = () => {
               onChange={(event) => {
                 const files = event.currentTarget.files;
                 if (files && files.length > 0) {
-                  setFieldValue("file", files[0]);
+                  setFieldValue("file", files);
                 } else {
                   setFieldValue("file", null); // Set to null if no file is selected
                 }

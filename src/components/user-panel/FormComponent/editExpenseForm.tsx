@@ -208,7 +208,11 @@ const EditExpenseInputForm: React.FC<EditExpenseInputFormProps> = ({
   const handleUpdateExpense = async (values: any) => {
     try {
       const resultAction = await dispatch<any>(
-        updateExpense({ id, updateDetails: values })
+        updateExpense({
+          id,
+          updateDetails: values,
+          userId: "",
+        })
       );
       if (updateExpense.fulfilled.match(resultAction)) {
         await dispatch<any>(fetchExpenses());

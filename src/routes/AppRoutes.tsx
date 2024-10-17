@@ -5,12 +5,14 @@ import Home from "../components/admin/HomePage/HomePage";
 import LoginPage from "../components/authentication/LoginPage";
 import Runway from "../components/authentication/Runaway";
 //import AdminDashboard from "../components/admin/AdminDashboard"; // Import your Admin Dashboard component
-import UserDashboard from "../components/user-panel/user/UserDashboard"; // Import your User Dashboard component
+import UserDashboard from "../components/UserPanel/UserDashboard"; // Import your User Dashboard component
 import ProtectedRoute from "./ProtectedRoute";
 import AdminPanel from "../components/admin/AdminDashboard";
+// import { ExpensesHome } from "../screen/Home/ExpensesHome";
+// import { Dashboard } from "../screen/Dashboard/dashboard";
+import NotFound from "../components/admin/Not-Found";
 import { ExpensesHome } from "../screen/Home/ExpensesHome";
 import { Dashboard } from "../screen/Dashboard/dashboard";
-import NotFound from "../components/admin/Not-Found";
 
 const AppRoutes: React.FC = () => {
   return (
@@ -26,7 +28,7 @@ const AppRoutes: React.FC = () => {
       />
       {/* User routes */}
       <Route
-        path="/user"
+        path="/user/*"
         element={
           <ProtectedRoute element={<UserDashboard />} requiredRole="user" />
         }
@@ -34,16 +36,8 @@ const AppRoutes: React.FC = () => {
       <Route path="*" element={<NotFound />} />
       {/* Add more protected routes as needed */}
       {/*Routes added by nagasritha*/}
-      <Route
-        path='/user/home'
-        element={
-          <ExpensesHome/>
-        }/>
-      <Route
-        path='/user/dashboard'
-        element={
-          <Dashboard/>
-        }/>
+      <Route path="/user/home" element={<ExpensesHome />} />
+      <Route path="/user/dashboard" element={<Dashboard />} />
     </Routes>
   );
 };

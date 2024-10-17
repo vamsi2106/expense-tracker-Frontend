@@ -1,25 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import ReactECharts from 'echarts-for-react';
-import { fetchExpensesGroupedByMonth } from '../../store/expenses.slice';
-import { useDispatch } from 'react-redux';
-import { PageStatus } from '../../utils/pageStatus';
-import { Loading } from '../Loading/loading';
+import React, { useEffect, useState } from "react";
+import ReactECharts from "echarts-for-react";
+import { fetchExpensesGroupedByMonth } from "../../store/expenses.slice";
+import { useDispatch } from "react-redux";
+import { PageStatus } from "../../utils/pageStatus";
+import { Loading } from "../user-panel/Loading/loading";
 
 interface ChartData {
-  xAxisData: string[],
-  seriesData: number[]
+  xAxisData: string[];
+  seriesData: number[];
 }
 
-interface ExpensesEChartProps{
-  id?:string
+interface ExpensesEChartProps {
+  id?: string;
 }
 
-export const ExpensesEChart: React.FC<ExpensesEChartProps> = ({id}) => {
+export const ExpensesEChart: React.FC<ExpensesEChartProps> = ({ id }) => {
   const pageStatusObject = new PageStatus();
   const [year, setYear] = useState(() => new Date().getFullYear());
-  const [chartData, setChartData] = useState<ChartData>({ xAxisData: [], seriesData: [] });
-  const [categoryPageStatus, setPageStatus] = useState<string>(pageStatusObject.initial);
+  const [chartData, setChartData] = useState<ChartData>({
+    xAxisData: [],
+    seriesData: [],
+  });
+  const [categoryPageStatus, setPageStatus] = useState<string>(
+    pageStatusObject.initial
+  );
   const dispatch = useDispatch();
+  const userId = "yourUserId"; // Replace with the actual userId
 
   useEffect(() => {
     fetchResult();
@@ -27,8 +33,11 @@ export const ExpensesEChart: React.FC<ExpensesEChartProps> = ({id}) => {
 
   const fetchResult = async () => {
     setPageStatus(pageStatusObject.loading);
-    let parameters = id===undefined ? { year } : { year , id}
-    const response = await dispatch<any>(fetchExpensesGroupedByMonth(parameters));
+    let parameters =
+      id === undefined ? { userId, year } : { userId, year, file_id: id };
+    const response = await dispatch<any>(
+      fetchExpensesGroupedByMonth(parameters)
+    );
 
     if (fetchExpensesGroupedByMonth.fulfilled.match(response)) {
       const expenseData: any = response.payload;
@@ -62,34 +71,34 @@ export const ExpensesEChart: React.FC<ExpensesEChartProps> = ({id}) => {
 
   const option = {
     tooltip: {
-      trigger: 'axis', // Show tooltip for axis
+      trigger: "axis", // Show tooltip for axis
       formatter: (params: any) => {
-        let result = `${params[0].name}<br/>`; // Month name
+        let result = `${params.name}<br/>`; // Month name
         params.forEach((item: any) => {
           result += `${item.seriesName}: ${item.value}<br/>`; // Series name and value
         });
         return result;
-      }
+      },
     },
     xAxis: {
-      type: 'category',
+      type: "category",
       data: chartData.xAxisData,
     },
     yAxis: {
-      type: 'value',
+      type: "value",
     },
     series: [
       {
-        name: 'Expenses', // Add name for tooltip display
+        name: "Expenses", // Add name for tooltip display
         data: chartData.seriesData,
-        type: 'line',
+        type: "line",
         smooth: true, // Optional: for smooth lines
       },
     ],
   };
 
   const successOutput = () => (
-    <div className=''>
+    <div className="">
       <ReactECharts option={option} />
     </div>
   );
@@ -103,7 +112,7 @@ export const ExpensesEChart: React.FC<ExpensesEChartProps> = ({id}) => {
       case pageStatusObject.success:
         return successOutput();
       case pageStatusObject.error:
-        return <p className='text-danger'>Something went wrong</p>;
+        return <p className="text-danger">Something went wrong</p>;
       default:
         return null;
     }
@@ -119,7 +128,7 @@ export const ExpensesEChart: React.FC<ExpensesEChartProps> = ({id}) => {
 
   const updateYear = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setYear(Number(event.target.value));
-  }
+  };
 
   return (
     <div>
@@ -128,17 +137,23 @@ export const ExpensesEChart: React.FC<ExpensesEChartProps> = ({id}) => {
       <select onChange={updateYear}>
         {years.map((item: number) => {
           if (item === new Date().getFullYear()) {
-            return <option key={item} value={item} selected>{item}</option>
+            return (
+              <option key={item} value={item} selected>
+                {item}
+              </option>
+            );
           }
           return (
-            <option key={item} value={item}>{item}</option>
-          )
+            <option key={item} value={item}>
+              {item}
+            </option>
+          );
         })}
       </select>
-      <button className='btn btn-primary' onClick={fetchResult}>Apply</button>
+      <button className="btn btn-primary" onClick={fetchResult}>
+        Apply
+      </button>
       {renderChart()}
     </div>
   );
 };
-
-// export default ExpensesEChart;

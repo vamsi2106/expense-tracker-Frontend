@@ -44,21 +44,27 @@ const ManualExpenseInputForm: React.FC<ManualExpenseInputFormProps> = ({
 
   // Function to add or update expenses
   const addExpenses = async (values: any) => {
-    console.log("function triggerd");
+    console.log("function triggered");
     try {
       let resultAction;
+      const userId = "yourUserId"; // Replace with the actual userId
       if (!isUpdate) {
-        resultAction = await dispatch<any>(createExpense(values));
+        resultAction = await dispatch<any>(
+          createExpense({ userId, expenseData: values })
+        );
         if (createExpense.fulfilled.match(resultAction)) {
-          await dispatch<any>(fetchExpenses());
+          await dispatch<any>(fetchExpenses({ userId }));
         }
       } else {
-        console.log(id, name);
-        resultAction = await dispatch<any>(
-          updateExpense({ id, updateDetails: values })
-        ); // Ensure correct argument structure
-        if (updateExpense.fulfilled.match(resultAction)) {
-          await dispatch<any>(fetchExpenses());
+        if (id) {
+          resultAction = await dispatch<any>(
+            updateExpense({ userId, id, updateDetails: values })
+          ); // Ensure correct argument structure
+          if (updateExpense.fulfilled.match(resultAction)) {
+            await dispatch<any>(fetchExpenses({ userId }));
+          }
+        } else {
+          console.error("ID is required for updating an expense");
         }
       }
     } catch (error) {

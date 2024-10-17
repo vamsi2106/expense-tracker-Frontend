@@ -17,6 +17,7 @@ export const EditExpenseModal: React.FC<EditExpenseModalProps> = ({
   expense,
 }) => {
   const dispatch = useDispatch();
+  const userId = "yourUserId"; // Replace with the actual userId
 
   // Define Yup validation schema
   const validationSchema = Yup.object({
@@ -35,18 +36,19 @@ export const EditExpenseModal: React.FC<EditExpenseModalProps> = ({
       category: expense?.category || "",
       amount: expense?.amount || "",
       date: expense?.date
-        ? new Date(expense.date).toISOString().split("T")[0]
+        ? new Date(expense.date).toISOString().split("T")
         : "", // Format the date correctly
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
-        const formattedDate = values.date ? values.date.replace(/-/g, "/") : "";
+        const formattedDate =
+          typeof values.date === "string" ? values.date.replace(/-/g, "/") : "";
         const customValues = { ...values, date: formattedDate };
         await dispatch<any>(
-          updateExpense({ id: expense.id, updateDetails: customValues })
+          updateExpense({ userId, id: expense.id, updateDetails: customValues })
         );
-        dispatch<any>(fetchExpenses()); // Fetch the updated list of expenses
+        dispatch<any>(fetchExpenses({ userId })); // Fetch the updated list of expenses
         onClose(); // Close the modal after submission
       } catch (error) {
         console.log("Error updating expense:", error);

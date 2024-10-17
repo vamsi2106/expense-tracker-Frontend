@@ -31,7 +31,7 @@
 //   console.log(expensesFilterdByDay);
 //   //dispatch<any>(fetchExpensesGroupedByDate({offset:0}));
 //   let [offsetValue,setOffsetValue] = useState<number>(0);
-  
+
 //   useEffect(()=>{
 //     console.log('component mounted');
 //     fetchResult(0);
@@ -40,12 +40,12 @@
 //   const fetchResult = async (offset:number)=>{
 //     await dispatch<any>(fetchExpensesGroupedByDate({offset}))
 //   }
-  
+
 //   let increaseOffset = ()=>{
 //     if(offsetValue < parseInt(expenses.length/7)){
 //       setOffsetValue(offsetValue+1);
 //     }
-//   } 
+//   }
 
 //   let decreaseOffset = ()=>{
 //     if(offsetValue > 0){
@@ -57,7 +57,7 @@
 //     <div>
 //       <h2>Last 7 days expenses</h2>
 //   <ResponsiveContainer width="80%" height={400}>
-    
+
 //     <LineChart data={data}>
 //       <CartesianGrid strokeDasharray="3 3" />
 //       <XAxis dataKey="name" />
@@ -73,9 +73,8 @@
 
 // export default ExpensesChart;
 
-
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   LineChart,
   Line,
@@ -84,34 +83,38 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
-} from 'recharts';
-import { fetchExpensesGroupedByDate } from '../../store/expenses.slice';
-import './chart.css'
+  ResponsiveContainer,
+} from "recharts";
+import { fetchExpensesGroupedByDate } from "../../store/expenses.slice";
+import "./chart.css";
 interface DataPoint {
   name: string; // Should be the formatted date
   total_amount: number; // Should be the total amount
 }
 
-interface ExpensesChartsProps{
-  id?:string;
+interface ExpensesChartsProps {
+  id?: string;
 }
-const ExpensesChart: React.FC<ExpensesChartsProps> = ({id}) => {
+const ExpensesChart: React.FC<ExpensesChartsProps> = ({ id }) => {
   const dispatch = useDispatch();
-  const { expensesFilteredByDay, expenses } = useSelector((state: any) => state.expenses);
-  
+  const { expensesFilteredByDay, expenses } = useSelector(
+    (state: any) => state.expenses
+  );
+
   const [offsetValue, setOffsetValue] = useState<number>(0);
   const [chartData, setChartData] = useState<DataPoint[]>([]);
 
   useEffect(() => {
-    console.log('component mounted');
+    console.log("component mounted");
     fetchResult(offsetValue);
   }, [dispatch, offsetValue]);
 
   const fetchResult = async (offset: number) => {
-    const response = await dispatch<any>(fetchExpensesGroupedByDate({ offset , file_id:id}));
-    if (response.meta.requestStatus === 'fulfilled') {
-      //formatChartData(response.payload);
+    const userId = "yourUserId"; // Replace with actual userId
+    const response = await dispatch<any>(
+      fetchExpensesGroupedByDate({ userId, offset, file_id: id })
+    );
+    if (response.meta.requestStatus === "fulfilled") {
       formattedData(response.payload);
     }
   };
@@ -123,40 +126,46 @@ const ExpensesChart: React.FC<ExpensesChartsProps> = ({id}) => {
 
     // Add placeholders for missing data
     if (length > 0) {
-        for (let i = 0; i < length; i++) {
-            updatedData.push({ name: "YYYY-MM-DD", total_amount: 0 });
-        }
+      for (let i = 0; i < length; i++) {
+        updatedData.push({ name: "YYYY-MM-DD", total_amount: 0 });
+      }
     }
 
     // Add actual data items to updatedData
     for (let dataItem of data) {
-        updatedData.push({ name: dataItem.date, total_amount: dataItem.total_amount });
+      updatedData.push({
+        name: dataItem.date,
+        total_amount: dataItem.total_amount,
+      });
     }
 
     setChartData(updatedData);
-};
-
+  };
 
   const increaseOffset = () => {
     if (offsetValue < Math.ceil(expenses.length / 7) - 1) {
-      setOffsetValue(prev => prev + 1);
-      fetchResult(offsetValue+1);
+      setOffsetValue((prev) => prev + 1);
+      fetchResult(offsetValue + 1);
     }
   };
 
   const decreaseOffset = () => {
     if (offsetValue > 0) {
-      setOffsetValue(prev => prev - 1);
-      fetchResult(offsetValue-1);
+      setOffsetValue((prev) => prev - 1);
+      fetchResult(offsetValue - 1);
     }
   };
 
   return (
     <div>
       <h2>Last 7 days expenses</h2>
-      <div className='align-between'>
-        <button onClick={increaseOffset} className='btn btn-primary'>Prev</button>
-        <button onClick={decreaseOffset} className='btn btn-primary'>Next</button>
+      <div className="align-between">
+        <button onClick={increaseOffset} className="btn btn-primary">
+          Prev
+        </button>
+        <button onClick={decreaseOffset} className="btn btn-primary">
+          Next
+        </button>
       </div>
       <ResponsiveContainer width="80%" height={400}>
         <LineChart data={chartData}>
@@ -168,7 +177,6 @@ const ExpensesChart: React.FC<ExpensesChartsProps> = ({id}) => {
           <Line type="monotone" dataKey="total_amount" stroke="#8884d8" />
         </LineChart>
       </ResponsiveContainer>
-    
     </div>
   );
 };
