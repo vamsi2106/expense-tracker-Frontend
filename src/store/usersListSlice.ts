@@ -23,9 +23,21 @@ export const fetchUsers = createAsyncThunk<User[], string>(
       headers: { Authorization: `Bearer ${token}` },
     });
     console.log("userList", response);
-    return response.data; // This is now expected to be an array of users
+    return response.data;
   }
 );
+
+interface UsersListState {
+  users: Array<{
+    id: string;
+    username: string;
+    email: string;
+    role: string;
+    userId: string;
+  }>;
+  loading: boolean;
+  error: string | null;
+}
 
 const initialState: UsersState = {
   users: [],

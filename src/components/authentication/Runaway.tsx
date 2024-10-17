@@ -42,19 +42,30 @@ function Runway() {
             "http://localhost:5000/auth/callback",
             { code }
           );
-          console.log(response);
-          // if (response.data.error && response.data.redirect) {
-          //   // User not found, redirect to login page
-          //   alert("User not found. Redirecting to login page.");
-          //   navigate("/login");
-          //   return;
-          // } else {
-          const { token, role, username, userEmail } = response.data as AuthResponse;
+
+          console.log("response", response);
+
+          if (response.data.error && response.data.redirect) {
+            // Automatically log out from both Microsoft and your app if user is not found
+            removeCookie("token");
+            removeCookie("role");
+            localStorage.clear();
+            sessionStorage.clear();
+
+            // Redirect to Microsoft logout URL to clear SSO session and prompt for account selection
+            window.location.href = microsoftLogoutUrl;
+            return;
+          }
+
+          const { token, role, username, userEmail, userid, userImageUrl } =
+            response.data;
 
           setCookie("token", token, 3);
           setCookie("role", role, 3);
 
-          dispatch(setUser({ token, role, username, userEmail }));
+          dispatch(
+            setUser({ token, role, username, userEmail, userid, userImageUrl })
+          );
 
           setProgress(100);
           loadingBarRef.current?.complete();
@@ -95,7 +106,7 @@ function Runway() {
           visible={true}
           height="100"
           width="100"
-          color="#4fa94d"
+          color="#f11946"
           ariaLabel="grid-loading"
           radius="12.5"
           wrapperStyle={{}}

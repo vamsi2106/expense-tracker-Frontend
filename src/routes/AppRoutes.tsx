@@ -1,7 +1,7 @@
 // src/routes/AppRoutes.tsx
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Home from "../components/HomePage/HomePage";
+import Home from "../components/admin/HomePage/HomePage";
 import LoginPage from "../components/authentication/LoginPage";
 import Runway from "../components/authentication/Runaway";
 //import AdminDashboard from "../components/admin/AdminDashboard"; // Import your Admin Dashboard component
@@ -10,15 +10,12 @@ import ProtectedRoute from "./ProtectedRoute";
 import AdminPanel from "../components/admin/AdminDashboard";
 import { ExpensesHome } from "../screen/Home/ExpensesHome";
 import { Dashboard } from "../screen/Dashboard/dashboard";
+import NotFound from "../components/admin/Not-Found";
 
 
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route
-        path="/"
-        element={<ProtectedRoute element={<Home />} requiredRole="admin" />}
-      />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/runway" element={<Runway />} />
       {/* Admin routes */}
@@ -35,6 +32,7 @@ const AppRoutes: React.FC = () => {
           <ProtectedRoute element={<UserDashboard />} requiredRole="user" />
         }
       />
+      <Route path="*" element={<NotFound />} />
       {/* Add more protected routes as needed */}
       {/*Routes added by nagasritha*/}
       <Route

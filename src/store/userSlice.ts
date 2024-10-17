@@ -1,19 +1,22 @@
-
 // src/store/userSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface UserState {
   token: string | null;
   role: string | null;
+  userid: string | null;
   username: string | null;
   userEmail: string | null;
+  profileImg: string | null;
 }
 
 const initialState: UserState = {
   token: null,
   role: null,
+  userid: null,
   username: null,
   userEmail: null,
+  profileImg: null,
 };
 
 const userSlice = createSlice({
@@ -27,18 +30,24 @@ const userSlice = createSlice({
         role: string;
         username: string;
         userEmail: string;
+        userid: string;
+        userImageUrl: string; // Update here
       }>
     ) => {
       state.token = action.payload.token;
       state.role = action.payload.role;
+      state.userid = action.payload.userid;
       state.username = action.payload.username;
       state.userEmail = action.payload.userEmail;
+      state.profileImg = action.payload.userImageUrl; // Update the property name
     },
     logout: (state) => {
       state.token = null;
       state.role = null;
       state.username = null;
       state.userEmail = null;
+      state.userid = null;
+      state.profileImg = null;
     },
   },
 });
