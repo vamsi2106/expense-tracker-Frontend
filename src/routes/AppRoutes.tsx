@@ -34,8 +34,16 @@ const AppRoutes: React.FC = () => {
       <Route path="*" element={<NotFound />} />
       {/* Add more protected routes as needed */}
       {/*Routes added by nagasritha*/}
-      <Route path="/user/home" element={<ExpensesHome />} />
-      <Route path="/user/dashboard" element={<Dashboard />} />
+      <Route
+        path='/user/home'
+        element={
+          <ExpensesHome/>
+        }/>
+      <Route
+        path='/user/dashboard'
+        element={
+          <Dashboard/>
+        }/>
     </Routes>
   );
 };
