@@ -11,6 +11,7 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import Toast CSS
 import "./RegisterUser.css"; // Custom CSS
+import { registerUser } from "../../../services/user.services";
 
 const RegisterUser: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -56,13 +57,8 @@ const RegisterUser: React.FC = () => {
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(typeof userImageUrl);
     try {
-      await axios.post(
-        "http://localhost:5000/users/register",
-        { username, email, role, userImageUrl },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await registerUser({ username, email, role, userImageUrl });
       toast.success("User registered and invitation sent successfully.");
       setUsername("");
       setEmail("");
@@ -70,7 +66,6 @@ const RegisterUser: React.FC = () => {
       setuserImageUrl("");
       setIsImageUploaded(false); // Reset upload status after successful registration
     } catch (error) {
-      console.error("Error registering user", error);
       toast.error("Failed to register user or send invitation.");
     }
   };

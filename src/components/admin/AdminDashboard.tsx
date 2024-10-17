@@ -1,20 +1,13 @@
+// src/components/admin/AdminDashboard.tsx
 import React, { useState, useEffect } from "react";
 import { Link, Routes, Route, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../store";
 import { fetchUsers } from "../../store/usersListSlice";
-import { UseSelector } from "react-redux";
-import {
-  FaHome,
-  FaUserPlus,
-  FaUsers,
-  FaUserMinus,
-  FaSignOutAlt,
-  FaBars,
-} from "react-icons/fa";
+import { FaUserPlus, FaUsers, FaSignOutAlt } from "react-icons/fa";
 import Logout from "../authentication/Logout";
 import RegisterUser from "./RegisterUser/RegisterUser";
-import UsersList from "./UsersList/UsersList";
+import UsersList from "../admin/UsersList/UsersList";
 import "./admin.css";
 import NotFound from "./Not-Found";
 import HomePage from "./HomePage/HomePage";
@@ -24,12 +17,11 @@ const AdminDashboard: React.FC = () => {
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const user = useSelector((state: RootState) => state.user);
-  console.log("profileimg", user.profileImg);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      dispatch(fetchUsers(token));
+      dispatch(fetchUsers());
     }
   }, [dispatch]);
 
@@ -57,23 +49,21 @@ const AdminDashboard: React.FC = () => {
           <div>
             <strong className="admin-subtitle">{user.username}</strong>
             <br />
-            <strong className="admin-subtitle">{user.userEmail} </strong>
+            <strong className="admin-subtitle">{user.userEmail}</strong>
           </div>
         </div>
         <hr style={{ width: "100%" }} />
         <ul className="nav-links">
           {navItems.map((item) => (
-            <>
-              <li
-                key={item.path}
-                className={location.pathname === item.path ? "active" : ""}
-              >
-                <Link to={item.path}>
-                  {item.icon}
-                  <span>{item.text}</span>
-                </Link>
-              </li>
-            </>
+            <li
+              key={item.path}
+              className={location.pathname === item.path ? "active" : ""}
+            >
+              <Link to={item.path}>
+                {item.icon}
+                <span>{item.text}</span>
+              </Link>
+            </li>
           ))}
           <li>
             <Logout />
@@ -88,7 +78,6 @@ const AdminDashboard: React.FC = () => {
           <Routes>
             <Route path="register" element={<RegisterUser />} />
             <Route path="users" element={<UsersList />} />
-            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
       </div>

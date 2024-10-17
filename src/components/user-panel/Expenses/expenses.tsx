@@ -1,5 +1,5 @@
 import { ExpenseModal } from "../ExpenseModel/expenseform.model";
-import { deleteExpense, fetchExpenses, getExpenseById } from "../../store/expenses.slice";
+import { deleteExpense, fetchExpenses, getExpenseById } from "../../../store/expenses.slice";
 import { useSelector, useDispatch } from "react-redux";
 import { Modal } from "../Modal/model";
 import EditExpenseInputForm from "../FormComponent/editExpenseForm";

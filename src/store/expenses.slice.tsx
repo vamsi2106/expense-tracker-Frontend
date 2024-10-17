@@ -1,3 +1,4 @@
+// src/store/expenses.slice.tsx
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { ExpenseDetails } from '../Interface/expense.interface';
 import { ExpensesService } from '../services/expense.service'; // Import your service

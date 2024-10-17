@@ -1,37 +1,38 @@
 import React, { useState, useEffect } from "react";
-import { Navbar } from "../../components/Navbar/navbar";
+import { Navbar } from "../../components/user-panel/Navbar/navbar";
 import { PageStatus } from "../../utils/pageStatus";
-import { Welcome } from "../../components/Welcome/welcome";
-import { Loading } from "../../components/Loading/loading";
-import { Empty } from "../../components/Empty/empty";
+import { Welcome } from "../../components/user-panel/Welcome/welcome";
+import { Loading } from "../../components/user-panel/Loading/loading";
+import { Empty } from "../../components/user-panel/Empty/empty";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchExpenses } from "../../store/expenses.slice";
-import { HomeSuccessPage } from "../../components/HomeSuccessPage/homeSuccessPage";
-import { Error } from "../../components/ErrorPage/error";
-import { ExpenseModal } from "../../components/ExpenseModel/expenseform.model";
+import { HomeSuccessPage } from "../../components/user-panel/HomeSuccessPage/homeSuccessPage";
+import { Error } from "../../components/user-panel/ErrorPage/error";
+import { ExpenseModal } from "../../components/user-panel/ExpenseModel/expenseform.model";
 
 export const ExpensesHome = () => {
   const pageStatusObject = new PageStatus();
   const [homePageStatus, setPageStatus] = useState(pageStatusObject.initial);
   const tabs = {
-    files : 'FILES',
-    expenses : 'EXPENSES'
-}
+    files: "FILES",
+    expenses: "EXPENSES",
+  };
 
-const [tab,setTab] = useState<string>(tabs.expenses);
-const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tab, setTab] = useState<string>(tabs.expenses);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Redux hooks
   const dispatch = useDispatch();
   const { expenses, page_status } = useSelector((state: any) => state.expenses);
-    console.log(page_status,expenses);
+  console.log(page_status, expenses);
   // Flag to control if expenses have been fetched already
   const [hasFetchedData, setHasFetchedData] = useState(false);
 
   // Show the initial status (welcome screen) for 4 seconds before fetching data
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (!hasFetchedData) { // Only fetch data once
+      if (!hasFetchedData) {
+        // Only fetch data once
         dispatch<any>(fetchExpenses()); // Fetch expenses after 4 seconds
         setPageStatus(pageStatusObject.loading); // Set to loading while fetching data
         setHasFetchedData(true); // Mark data as fetched
@@ -59,37 +60,40 @@ const [isModalOpen, setIsModalOpen] = useState(false);
       case pageStatusObject.empty:
         return <Empty />;
       case pageStatusObject.success:
-        return <HomeSuccessPage tab = {tab}/>;
-    case pageStatusObject.error:
-        return <Error/>
+        return <HomeSuccessPage tab={tab} />;
+      case pageStatusObject.error:
+        return <Error />;
       default:
         return null;
     }
   };
   const triggerModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
-  const changeTab = (selectedTab:string)=>{
+  const closeModal = () => setIsModalOpen(false);
+  const changeTab = (selectedTab: string) => {
     setTab(selectedTab);
-}
+  };
 
-console.log(tab);
+  console.log(tab);
   return (
     <div>
       <Navbar />
       <nav className="navbar bg-light shadow p-3 d-flex gap-2">
-                <div className="d-flex gap-1">
-                    <h5 onClick={()=>changeTab(tabs.files)}><b>Files</b></h5>
-                    <h5 onClick={()=>changeTab(tabs.expenses)}><b className="px-4">Expense Details</b></h5>
-                </div>
-                <div>
-                    <button className="btn btn-primary" onClick={triggerModal}>Add your Expense</button>
-                </div>
-            </nav>
-      <div className="align-center-to-the-page">
-        {renderContent()}
-      </div>
+        <div className="d-flex gap-1">
+          <h5 onClick={() => changeTab(tabs.files)}>
+            <b>Files</b>
+          </h5>
+          <h5 onClick={() => changeTab(tabs.expenses)}>
+            <b className="px-4">Expense Details</b>
+          </h5>
+        </div>
+        <div>
+          <button className="btn btn-primary" onClick={triggerModal}>
+            Add your Expense
+          </button>
+        </div>
+      </nav>
+      <div className="align-center-to-the-page">{renderContent()}</div>
       <ExpenseModal isOpen={isModalOpen} onClose={closeModal} />
-
     </div>
   );
 };

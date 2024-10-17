@@ -1,5 +1,10 @@
-// src/types.ts
+// src/types/types.ts
+import { ReactNode } from "react";
+
 export interface User {
-  id: number; // Replace with the correct type from your backend
-  email: string; // Adjust this based on your user model
+  role: string;
+  username: string;
+  userId: string | null;
+  id: string;
+  email: string;
 }
