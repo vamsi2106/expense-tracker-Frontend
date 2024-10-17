@@ -44,7 +44,7 @@ const AppRoutes: React.FC = () => {
         }/>
       <Route
         path='/user/dashboard'
-        element={
+        element={ 
           <Dashboard/>
         }/>
     </Routes>

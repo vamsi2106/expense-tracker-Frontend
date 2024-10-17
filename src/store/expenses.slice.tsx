@@ -11,6 +11,11 @@ interface ExpensesState {
   message: string | null;
   expense: ExpenseDetails | null;
   editModel: boolean;
+  expensesFilterdByDay : any;
+  expensesFilterdByCategory : any;
+  expensesFilterdByWeek : any;
+  expensesFilterdByMonth : any;
+  expensesFilterdByYear : any;
 }
 
 const initialState: ExpensesState = {
@@ -24,7 +29,12 @@ const initialState: ExpensesState = {
       name: "",
       category: "",
     },
-  editModel : false
+  editModel : false,
+  expensesFilterdByDay : null,
+  expensesFilterdByCategory : null,
+  expensesFilterdByWeek : null,
+  expensesFilterdByMonth : null,
+  expensesFilterdByYear : null
 };
 
 // Create an instance of your service
@@ -92,6 +102,72 @@ export const getExpenseById = createAsyncThunk(
     }
   }
 );
+
+// Group expenses by date
+export const fetchExpensesGroupedByDate = createAsyncThunk(
+  'expenses/fetchExpensesGroupedByDate',
+  async ({ offset, file_id }: { offset: number; file_id?: string }, { rejectWithValue }) => {
+    try {
+      const response = await expensesService.getExpensesGroupedByDate(offset, file_id);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error || 'Failed to fetch expenses grouped by date');
+    }
+  }
+);
+
+// Group expenses by category
+export const fetchExpensesGroupedByCategory = createAsyncThunk(
+  'expenses/fetchExpensesGroupedByCategory',
+  async ({ startDate, endDate, file_id }: { startDate?: string; endDate?: string; file_id?: string }, { rejectWithValue }) => {
+    try {
+      const response = await expensesService.getExpensesGroupedByCategory(file_id, startDate, endDate);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error || 'Failed to fetch expenses grouped by category');
+    }
+  }
+);
+
+// Group expenses by week
+export const fetchExpensesGroupedByWeek = createAsyncThunk(
+  'expenses/fetchExpensesGroupedByWeek',
+  async ({ month, year, file_id }: { month?: number; year?: number; file_id?: string }, { rejectWithValue }) => {
+    try {
+      const response = await expensesService.getExpensesGroupedByWeek(month, year, file_id);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error || 'Failed to fetch expenses grouped by week');
+    }
+  }
+);
+
+// Group expenses by month
+export const fetchExpensesGroupedByMonth = createAsyncThunk(
+  'expenses/fetchExpensesGroupedByMonth',
+  async ({ year, file_id }: { year?: number; file_id?: string }, { rejectWithValue }) => {
+    try {
+      const response = await expensesService.getExpensesGroupedByMonth(file_id, year);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error || 'Failed to fetch expenses grouped by month');
+    }
+  }
+);
+
+// Group expenses by year
+export const fetchExpensesGroupedByYear = createAsyncThunk(
+  'expenses/fetchExpensesGroupedByYear',
+  async ({ file_id }: { file_id?: string }, { rejectWithValue }) => {
+    try {
+      const response = await expensesService.getExpensesGroupedByYear(file_id);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error || 'Failed to fetch expenses grouped by year');
+    }
+  }
+);
+
 
 // Create the slice
 const expensesSlice = createSlice({
@@ -187,7 +263,74 @@ const expensesSlice = createSlice({
       .addCase(getExpenseById.rejected, (state, action) => {
         state.page_status = pageStatusObject.error;
         state.message = action.payload as string || 'Failed to fetch expense by ID';
+      })
+      //query thunks
+      // Fetch expenses grouped by date
+      .addCase(fetchExpensesGroupedByDate.pending, (state) => {
+        state.page_status = pageStatusObject.loading;
+      })
+      .addCase(fetchExpensesGroupedByDate.fulfilled, (state, action) => {
+        state.page_status = pageStatusObject.success;
+        state.expensesFilterdByDay = action.payload;
+        state.message = null;
+      })
+      .addCase(fetchExpensesGroupedByDate.rejected, (state, action) => {
+        state.page_status = pageStatusObject.error;
+        state.message = action.payload as string || 'Failed to fetch expenses grouped by date';
+      })
+      // Fetch expenses grouped by category
+      .addCase(fetchExpensesGroupedByCategory.pending, (state) => {
+        state.page_status = pageStatusObject.loading;
+      })
+      .addCase(fetchExpensesGroupedByCategory.fulfilled, (state, action) => {
+        state.page_status = pageStatusObject.success;
+        state.expensesFilterdByCategory = action.payload;
+        state.message = null;
+      })
+      .addCase(fetchExpensesGroupedByCategory.rejected, (state, action) => {
+        state.page_status = pageStatusObject.error;
+        state.message = action.payload as string || 'Failed to fetch expenses grouped by category';
+      })
+      // Fetch expenses grouped by week
+      .addCase(fetchExpensesGroupedByWeek.pending, (state) => {
+        state.page_status = pageStatusObject.loading;
+      })
+      .addCase(fetchExpensesGroupedByWeek.fulfilled, (state, action) => {
+        state.page_status = pageStatusObject.success;
+        state.expensesFilterdByWeek = action.payload;
+        state.message = null;
+      })
+      .addCase(fetchExpensesGroupedByWeek.rejected, (state, action) => {
+        state.page_status = pageStatusObject.error;
+        state.message = action.payload as string || 'Failed to fetch expenses grouped by week';
+      })
+      // Fetch expenses grouped by month
+      .addCase(fetchExpensesGroupedByMonth.pending, (state) => {
+        state.page_status = pageStatusObject.loading;
+      })
+      .addCase(fetchExpensesGroupedByMonth.fulfilled, (state, action) => {
+        state.page_status = pageStatusObject.success;
+        state.expensesFilterdByMonth = action.payload;
+        state.message = null;
+      })
+      .addCase(fetchExpensesGroupedByMonth.rejected, (state, action) => {
+        state.page_status = pageStatusObject.error;
+        state.message = action.payload as string || 'Failed to fetch expenses grouped by month';
+      })
+      // Fetch expenses grouped by year
+      .addCase(fetchExpensesGroupedByYear.pending, (state) => {
+        state.page_status = pageStatusObject.loading;
+      })
+      .addCase(fetchExpensesGroupedByYear.fulfilled, (state, action) => {
+        state.page_status = pageStatusObject.success;
+        state.expensesFilterdByYear = action.payload;
+        state.message = null;
+      })
+      .addCase(fetchExpensesGroupedByYear.rejected, (state, action) => {
+        state.page_status = pageStatusObject.error;
+        state.message = action.payload as string || 'Failed to fetch expenses grouped by year';
       });
+
   }
 
 });

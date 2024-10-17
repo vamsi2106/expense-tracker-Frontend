@@ -1,6 +1,6 @@
 // src/index.tsx
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client"; // Import createRoot for React 18
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../node_modules/bootstrap/dist/js/bootstrap.min.js';
 import './index.css';
@@ -9,11 +9,18 @@ import { PersistGate } from "redux-persist/integration/react";
 import store, { persistor } from "./store"; // Adjust the import path as needed
 import App from "./App";
 
-ReactDOM.render(
-  <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
-      <App />
-    </PersistGate>
-  </Provider>,
-  document.getElementById("root")
-);
+// Get the root DOM element
+const container = document.getElementById("root");
+
+// Ensure the container exists before calling createRoot
+if (container) {
+  const root = createRoot(container); // Use createRoot instead of ReactDOM.render
+
+  root.render(
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <App />
+      </PersistGate>
+    </Provider>
+  );
+}
