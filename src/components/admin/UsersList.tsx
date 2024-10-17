@@ -37,7 +37,7 @@ const UsersList: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
+            {users.map((user: any, index) => (
               <tr key={user.id}>
                 <td>{index + 1}</td>
                 <td>{user.username || "N/A"}</td>

@@ -7,6 +7,13 @@ import { setUser } from "../../store/userSlice";
 import LoadingBar, { LoadingBarRef } from "react-top-loading-bar";
 import { Grid } from "react-loader-spinner";
 
+interface AuthResponse {
+  token: string;
+  role: string;
+  username: string;
+  userEmail: string;
+}
+
 function Runway() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -35,20 +42,14 @@ function Runway() {
             "http://localhost:5000/auth/callback",
             { code }
           );
-
-          if (response.data.error && response.data.redirect) {
-            // Automatically log out from both Microsoft and your app if user is not found
-            removeCookie("token");
-            removeCookie("role");
-            localStorage.clear();
-            sessionStorage.clear();
-
-            // Redirect to Microsoft logout URL to clear SSO session and prompt for account selection
-            window.location.href = microsoftLogoutUrl;
-            return;
-          }
-
-          const { token, role, username, userEmail } = response.data;
+          console.log(response);
+          // if (response.data.error && response.data.redirect) {
+          //   // User not found, redirect to login page
+          //   alert("User not found. Redirecting to login page.");
+          //   navigate("/login");
+          //   return;
+          // } else {
+          const { token, role, username, userEmail } = response.data as AuthResponse;
 
           setCookie("token", token, 3);
           setCookie("role", role, 3);

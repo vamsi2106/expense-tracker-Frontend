@@ -106,7 +106,7 @@ export default function LoginPage() {
   const handleLoginClick = async () => {
     if (email.endsWith("@g7cr.com")) {
       try {
-        const response = await axios.post(
+        const response: any = await axios.post(
           "http://localhost:5000/users/check-email",
           { email }
         );
