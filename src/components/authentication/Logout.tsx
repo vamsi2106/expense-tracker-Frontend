@@ -2,7 +2,8 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { logout } from "../../store/userSlice";
 import { removeCookie } from "../../utils/cookieUtils";
-
+import { FaSignOutAlt } from "react-icons/fa";
+import "../../assets/styles/auth.css";
 const Logout: React.FC = () => {
   const dispatch = useDispatch();
 
@@ -29,7 +30,12 @@ const Logout: React.FC = () => {
     window.location.href = azureLogoutUrl;
   };
 
-  return <button onClick={handleLogout}>Logout</button>;
+  return (
+    <button className="logout-btn .active" onClick={handleLogout}>
+      <FaSignOutAlt />
+      Logout
+    </button>
+  );
 };
 
 export default Logout;
