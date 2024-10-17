@@ -37,7 +37,7 @@ const RegisterUser: React.FC = () => {
     formData.append("upload_preset", "user-images"); // Replace with your upload preset
 
     try {
-      const response = await axios.post(
+      const response: any = await axios.post(
         "https://api.cloudinary.com/v1_1/dtyiomktp/image/upload", // Replace with your Cloudinary URL
         formData
       );
