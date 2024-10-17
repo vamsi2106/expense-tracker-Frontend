@@ -7,6 +7,13 @@ import { setUser } from "../../store/userSlice";
 import LoadingBar, { LoadingBarRef } from "react-top-loading-bar";
 import { Grid } from "react-loader-spinner";
 
+interface AuthResponse {
+  token: string;
+  role: string;
+  username: string;
+  userEmail: string;
+}
+
 function Runway() {
   const location = useLocation();
   const navigate = useNavigate();
