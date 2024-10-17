@@ -19,9 +19,13 @@ interface ChartData {
     }[];
 }
 
-const PieChart: React.FC = () => {
-    let pageStatusObject = new PageStatus();
+interface PieChartProps{
+    id?:string;
+}
 
+const CategoryPieChart: React.FC<PieChartProps> = ({id}) => {
+    let pageStatusObject = new PageStatus();
+    console.log('pie chsrt');
     const [startDate, setStartDate] = useState(() => {
         const date = new Date();
         date.setMonth(date.getMonth() - 1);
@@ -52,7 +56,8 @@ const PieChart: React.FC = () => {
 
     const fetchResult = async () => {
         setPageStatus(pageStatusObject.loading);
-        const response = await dispatch<any>(fetchExpensesGroupedByCategory({ startDate, endDate }));
+        let parameters = id===undefined ? { startDate, endDate } :{ startDate, endDate , id}
+        const response = await dispatch<any>(fetchExpensesGroupedByCategory(parameters));
 
         if (fetchExpensesGroupedByCategory.fulfilled.match(response)) {
             const expenseData:any = response.payload;
@@ -158,4 +163,4 @@ const PieChart: React.FC = () => {
     );
 };
 
-export default PieChart;
+export default CategoryPieChart;

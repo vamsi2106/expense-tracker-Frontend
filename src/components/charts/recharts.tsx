@@ -10,7 +10,11 @@ interface ChartData {
   seriesData: number[]
 }
 
-export const ExpensesEChart: React.FC = () => {
+interface ExpensesEChartProps{
+  id?:string
+}
+
+export const ExpensesEChart: React.FC<ExpensesEChartProps> = ({id}) => {
   const pageStatusObject = new PageStatus();
   const [year, setYear] = useState(() => new Date().getFullYear());
   const [chartData, setChartData] = useState<ChartData>({ xAxisData: [], seriesData: [] });
@@ -23,7 +27,8 @@ export const ExpensesEChart: React.FC = () => {
 
   const fetchResult = async () => {
     setPageStatus(pageStatusObject.loading);
-    const response = await dispatch<any>(fetchExpensesGroupedByMonth({ year }));
+    let parameters = id===undefined ? { year } : { year , id}
+    const response = await dispatch<any>(fetchExpensesGroupedByMonth(parameters));
 
     if (fetchExpensesGroupedByMonth.fulfilled.match(response)) {
       const expenseData: any = response.payload;

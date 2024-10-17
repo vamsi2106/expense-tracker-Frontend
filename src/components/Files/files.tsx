@@ -1,13 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 // Make sure to import deleteFile
 import { Empty } from "../Empty/empty";
 import { deleteFile, fetchFiles } from "../../store/files.slice";
+import { PageStatus } from "../../utils/pageStatus";
 
 export const Files = () => {
+    
     const dispatch = useDispatch();
     const { files } = useSelector((state: any) => state.files);
-
+    
     useEffect(() => {
         dispatch<any>(fetchFiles());
     }, [dispatch]);
@@ -19,7 +21,6 @@ export const Files = () => {
 
     return (
         <div>
-
             {files && files.length > 0 ? (
                 files.map((item: any) => {
                     // Convert createdAt to a Date object for formatting

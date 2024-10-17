@@ -93,7 +93,10 @@ interface DataPoint {
   total_amount: number; // Should be the total amount
 }
 
-const ExpensesChart: React.FC = () => {
+interface ExpensesChartsProps{
+  id?:string;
+}
+const ExpensesChart: React.FC<ExpensesChartsProps> = ({id}) => {
   const dispatch = useDispatch();
   const { expensesFilteredByDay, expenses } = useSelector((state: any) => state.expenses);
   
@@ -106,7 +109,7 @@ const ExpensesChart: React.FC = () => {
   }, [dispatch, offsetValue]);
 
   const fetchResult = async (offset: number) => {
-    const response = await dispatch<any>(fetchExpensesGroupedByDate({ offset }));
+    const response = await dispatch<any>(fetchExpensesGroupedByDate({ offset , file_id:id}));
     if (response.meta.requestStatus === 'fulfilled') {
       //formatChartData(response.payload);
       formattedData(response.payload);
