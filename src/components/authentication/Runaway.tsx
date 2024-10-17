@@ -38,7 +38,7 @@ function Runway() {
         loadingBarRef.current?.continuousStart();
 
         try {
-          const response = await axios.post(
+          const response: any = await axios.post(
             "http://localhost:5000/auth/callback",
             { code }
           );

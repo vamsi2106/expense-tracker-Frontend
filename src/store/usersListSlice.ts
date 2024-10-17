@@ -1,8 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { ReactNode } from "react";
 
 // Define your user interface
 interface User {
+  role: ReactNode;
+  username: string;
+  userId: string | null;
   id: string;
   name: string;
   email: string;
@@ -55,13 +59,10 @@ const usersListSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(
-        fetchUsers.fulfilled,
-        (state, action: PayloadAction<User[]>) => {
-          state.loading = false;
-          state.users = action.payload; // Now correctly typed as User[]
-        }
-      )
+      .addCase(fetchUsers.fulfilled, (state, action: PayloadAction<User[]>) => {
+        state.loading = false;
+        state.users = action.payload; // Now correctly typed as User[]
+      })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch users.";
