@@ -1,5 +1,6 @@
 // src/store/userSlice.ts
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
+import { checkEmail } from "../services/user.services";
 
 interface UserState {
   token: string | null;
@@ -19,6 +20,15 @@ const initialState: UserState = {
   profileImg: null,
 };
 
+// Async thunk for login
+export const loginUser = createAsyncThunk(
+  "user/loginUser",
+  async (email: string) => {
+    const response = await checkEmail(email);
+    return response;
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -31,7 +41,7 @@ const userSlice = createSlice({
         username: string;
         userEmail: string;
         userid: string;
-        userImageUrl: string; // Update here
+        userImageUrl: string;
       }>
     ) => {
       state.token = action.payload.token;
@@ -39,7 +49,7 @@ const userSlice = createSlice({
       state.userid = action.payload.userid;
       state.username = action.payload.username;
       state.userEmail = action.payload.userEmail;
-      state.profileImg = action.payload.userImageUrl; // Update the property name
+      state.profileImg = action.payload.userImageUrl;
     },
     logout: (state) => {
       state.token = null;
@@ -49,6 +59,15 @@ const userSlice = createSlice({
       state.userid = null;
       state.profileImg = null;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(loginUser.fulfilled, (state, action) => {
+        // Handle login success
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        // Handle login failure
+      });
   },
 });
 

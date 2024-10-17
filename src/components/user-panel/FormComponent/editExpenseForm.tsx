@@ -25,7 +25,7 @@
 //   });
 
 //   const dispatch = useDispatch();
-  
+
 //   const messageColor = 'text-success';
 
 //   // Function to add or update expenses
@@ -38,7 +38,7 @@
 //       //   if (createExpense.fulfilled.match(resultAction)) {
 //       //     await dispatch<any>(fetchExpenses());
 //       //   }
-        
+
 //       // } else {
 //         console.log(id,name);
 //         resultAction = await dispatch<any>(updateExpense({ id, updateDetails: values })); // Ensure correct argument structure
@@ -46,7 +46,7 @@
 //           await dispatch<any>(fetchExpenses());
 //         }
 //       //}
-      
+
 //     } catch (error) {
 //       console.error('Error adding expense:', error);
 //     }
@@ -177,54 +177,58 @@
 
 // export default EditExpenseInputForm;
 
-import React from 'react';
-import { Formik, Field, Form, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { useDispatch } from 'react-redux';
-import { updateExpense,fetchExpenses } from '../../store/expenses.slice';
-import './forms.css';
+import React from "react";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { useDispatch } from "react-redux";
+import { updateExpense, fetchExpenses } from "../../../store/expenses.slice";
+import "./forms.css";
 
 interface EditExpenseInputFormProps {
   expenseDetails: any;
 }
 
-const EditExpenseInputForm: React.FC<EditExpenseInputFormProps> = ({ expenseDetails }) => {
+const EditExpenseInputForm: React.FC<EditExpenseInputFormProps> = ({
+  expenseDetails,
+}) => {
   const dispatch = useDispatch();
   const { id, name } = expenseDetails;
 
   // Define Yup validation schema
   const validationSchema = Yup.object({
-    name: Yup.string().required('Name is required'),
-    category: Yup.string().required('Category is required'),
+    name: Yup.string().required("Name is required"),
+    category: Yup.string().required("Category is required"),
     amount: Yup.number()
-      .required('Amount is required')
-      .positive('Amount must be positive'),
-    date: Yup.date().required('Date is required'),
+      .required("Amount is required")
+      .positive("Amount must be positive"),
+    date: Yup.date().required("Date is required"),
   });
 
   // Function to update the expense
   const handleUpdateExpense = async (values: any) => {
     try {
-      const resultAction = await dispatch<any>(updateExpense({ id, updateDetails: values }));
+      const resultAction = await dispatch<any>(
+        updateExpense({ id, updateDetails: values })
+      );
       if (updateExpense.fulfilled.match(resultAction)) {
         await dispatch<any>(fetchExpenses());
       }
     } catch (error) {
-      console.error('Error updating expense:', error);
+      console.error("Error updating expense:", error);
     }
   };
 
   return (
     <Formik
       initialValues={{
-        name: expenseDetails?.name || '',
-        category: expenseDetails?.category || '',
-        amount: expenseDetails?.amount || '',
-        date: expenseDetails?.date || '',
+        name: expenseDetails?.name || "",
+        category: expenseDetails?.category || "",
+        amount: expenseDetails?.amount || "",
+        date: expenseDetails?.date || "",
       }}
       validationSchema={validationSchema}
       onSubmit={(values, { setSubmitting }) => {
-        const formattedDate = values.date ? values.date.replace(/-/g, '/') : '';
+        const formattedDate = values.date ? values.date.replace(/-/g, "/") : "";
         const customValues = {
           ...values,
           date: formattedDate,
@@ -237,14 +241,18 @@ const EditExpenseInputForm: React.FC<EditExpenseInputFormProps> = ({ expenseDeta
         <Form>
           {/* Name Field */}
           <div>
-            <label htmlFor="name" className="label">Title</label>
+            <label htmlFor="name" className="label">
+              Title
+            </label>
             <Field name="name" type="text" className="input" />
             <ErrorMessage name="name" component="div" className="text-danger" />
           </div>
 
           {/* Category Field */}
           <div>
-            <label htmlFor="category" className="label">Category</label>
+            <label htmlFor="category" className="label">
+              Category
+            </label>
             <Field as="select" name="category" className="input">
               <option value="" label="Select category" />
               <option value="Food" label="Food" />
@@ -257,25 +265,41 @@ const EditExpenseInputForm: React.FC<EditExpenseInputFormProps> = ({ expenseDeta
               <option value="Office Expenses" label="Office Expenses" />
               <option value="Events" label="Events" />
             </Field>
-            <ErrorMessage name="category" component="div" className="text-danger" />
+            <ErrorMessage
+              name="category"
+              component="div"
+              className="text-danger"
+            />
           </div>
 
           {/* Amount Field */}
           <div>
-            <label htmlFor="amount" className="label">Amount</label>
+            <label htmlFor="amount" className="label">
+              Amount
+            </label>
             <Field name="amount" type="number" className="input" />
-            <ErrorMessage name="amount" component="div" className="text-danger" />
+            <ErrorMessage
+              name="amount"
+              component="div"
+              className="text-danger"
+            />
           </div>
 
           {/* Date Field */}
           <div>
-            <label htmlFor="date" className="label">Date</label>
+            <label htmlFor="date" className="label">
+              Date
+            </label>
             <Field name="date" type="date" className="input" />
             <ErrorMessage name="date" component="div" className="text-danger" />
           </div>
 
           {/* Submit Button */}
-          <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={isSubmitting}
+          >
             Submit
           </button>
         </Form>

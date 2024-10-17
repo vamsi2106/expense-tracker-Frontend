@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 import { Modal } from "../Modal/model";
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { useDispatch } from 'react-redux';
-import { updateExpense, fetchExpenses } from '../../store/expenses.slice';
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useDispatch } from "react-redux";
+import { updateExpense, fetchExpenses } from "../../../store/expenses.slice";
 
 interface EditExpenseModalProps {
   isOpen: boolean;
@@ -11,31 +11,41 @@ interface EditExpenseModalProps {
   expense: any; // This will be the selected expense object to edit
 }
 
-export const EditExpenseModal: React.FC<EditExpenseModalProps> = ({ isOpen, onClose, expense }) => {
+export const EditExpenseModal: React.FC<EditExpenseModalProps> = ({
+  isOpen,
+  onClose,
+  expense,
+}) => {
   const dispatch = useDispatch();
 
   // Define Yup validation schema
   const validationSchema = Yup.object({
-    name: Yup.string().required('Name field is required'),
-    category: Yup.string().required('Category is required'),
-    amount: Yup.number().required('Amount is required').positive('Amount must be positive'),
-    date: Yup.date().required('Date is required'),
+    name: Yup.string().required("Name field is required"),
+    category: Yup.string().required("Category is required"),
+    amount: Yup.number()
+      .required("Amount is required")
+      .positive("Amount must be positive"),
+    date: Yup.date().required("Date is required"),
   });
 
   // Use Formik for form handling
   const formik = useFormik({
     initialValues: {
-      name: expense?.name || '',
-      category: expense?.category || '',
-      amount: expense?.amount || '',
-      date: expense?.date ? new Date(expense.date).toISOString().split('T')[0] : '', // Format the date correctly
+      name: expense?.name || "",
+      category: expense?.category || "",
+      amount: expense?.amount || "",
+      date: expense?.date
+        ? new Date(expense.date).toISOString().split("T")[0]
+        : "", // Format the date correctly
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
-        const formattedDate = values.date ? values.date.replace(/-/g, '/') : '';
+        const formattedDate = values.date ? values.date.replace(/-/g, "/") : "";
         const customValues = { ...values, date: formattedDate };
-        await dispatch<any>(updateExpense({ id: expense.id, updateDetails: customValues }));
+        await dispatch<any>(
+          updateExpense({ id: expense.id, updateDetails: customValues })
+        );
         dispatch<any>(fetchExpenses()); // Fetch the updated list of expenses
         onClose(); // Close the modal after submission
       } catch (error) {
@@ -57,7 +67,11 @@ export const EditExpenseModal: React.FC<EditExpenseModalProps> = ({ isOpen, onCl
             onBlur={formik.handleBlur}
             value={formik.values.name}
           />
-          {formik.errors.name && formik.touched.name && <div>{typeof formik.errors.name ==="string" ? formik.errors.name : ''}</div>}
+          {formik.errors.name && formik.touched.name && (
+            <div>
+              {typeof formik.errors.name === "string" ? formik.errors.name : ""}
+            </div>
+          )}
         </div>
 
         <div>
@@ -80,7 +94,13 @@ export const EditExpenseModal: React.FC<EditExpenseModalProps> = ({ isOpen, onCl
             <option value="Office Expenses" label="Office Expenses" />
             <option value="Events" label="Events" />
           </select>
-          {formik.errors.category && formik.touched.category && <div>{typeof formik.errors.category ==="string" ? formik.errors.category : ''}</div>}
+          {formik.errors.category && formik.touched.category && (
+            <div>
+              {typeof formik.errors.category === "string"
+                ? formik.errors.category
+                : ""}
+            </div>
+          )}
         </div>
 
         <div>
@@ -93,7 +113,13 @@ export const EditExpenseModal: React.FC<EditExpenseModalProps> = ({ isOpen, onCl
             onBlur={formik.handleBlur}
             value={formik.values.amount}
           />
-          {formik.errors.amount && formik.touched.amount && <div>{typeof formik.errors.amount ==="string" ? formik.errors.amount : ''}</div>}
+          {formik.errors.amount && formik.touched.amount && (
+            <div>
+              {typeof formik.errors.amount === "string"
+                ? formik.errors.amount
+                : ""}
+            </div>
+          )}
         </div>
 
         <div>
@@ -106,7 +132,9 @@ export const EditExpenseModal: React.FC<EditExpenseModalProps> = ({ isOpen, onCl
             onBlur={formik.handleBlur}
             value={formik.values.date}
           />
-          {formik.errors.date && formik.touched.date && <div>{formik.errors.date}</div>}
+          {formik.errors.date && formik.touched.date && (
+            <div>{formik.errors.date}</div>
+          )}
         </div>
 
         <button type="submit" disabled={!formik.isValid || formik.isSubmitting}>

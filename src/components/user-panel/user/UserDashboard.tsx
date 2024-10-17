@@ -1,5 +1,5 @@
 import React from "react";
-import Logout from "../authentication/Logout";
+import Logout from "../../authentication/Logout";
 
 const UserDashboard: React.FC = () => {
   return (

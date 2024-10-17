@@ -1,3 +1,4 @@
+// src/store/files.slice.tsx 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { FileService } from '../services/file.services'; // Import your service
 import { PageStatus } from '../utils/pageStatus';

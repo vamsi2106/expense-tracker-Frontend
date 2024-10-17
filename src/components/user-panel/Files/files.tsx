@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 // Make sure to import deleteFile
 import { Empty } from "../Empty/empty";
-import { deleteFile, fetchFiles } from "../../store/files.slice";
+import { deleteFile, fetchFiles } from "../../../store/files.slice";
 
 export const Files = () => {
     const dispatch = useDispatch();

@@ -1,64 +1,46 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../../store/index";
-import { fetchUsers } from "../../../store/usersListSlice";
+import { fetchUsers, deleteUser } from "../../../store/usersListSlice";
 import { toast, ToastContainer } from "react-toastify";
-import axios from "axios";
 import "react-toastify/dist/ReactToastify.css"; // Import Toast CSS
 import "./UsersList.css";
+import { User } from "../../../types/types";
 
 const UsersList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { users, loading, error } = useSelector(
     (state: RootState) => state.usersList
   );
-  const token: any = useSelector((state: RootState) => state.user.token);
+  const token = useSelector((state: RootState) => state.user.token);
 
   const [selectedUser, setSelectedUser] = useState<string | null>(null); // Track the user to be deleted
   const [showConfirmation, setShowConfirmation] = useState(false); // Control confirmation modal visibility
 
-  // Fetch users on component mount or when token is updated
   useEffect(() => {
     if (token) {
       toast.info("Toast is working!");
-      dispatch(fetchUsers(token));
+      dispatch(fetchUsers());
     }
   }, [token, dispatch]);
 
-  // Show a toast notification on success or error
   const handleDelete = async () => {
-    const user = users.find((u) => u.userId === selectedUser);
+    const user = users.find((u: User) => u.userId === selectedUser);
 
-    if (!user) {
+    if (!user || !user.userId) {
       toast.error("User not found.");
       return;
     }
 
     try {
-      // Show a loading state in case the request takes time
       toast.info("Deleting user...");
-
-      const response = await axios.delete(
-        `http://localhost:5000/users/remove/${user.userId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      // Check if the deletion was successful by examining the response status
-      if (response.status === 200) {
-        toast.success("User removed successfully.");
-        setShowConfirmation(false);
-        dispatch(fetchUsers(token)); // Re-fetch users after deletion
-      } else {
-        // Handle unexpected response status
-        toast.error("Failed to delete user. Please try again.");
-      }
+      await dispatch(deleteUser({ userId: user.userId as string })).unwrap();
+      toast.success("User removed successfully.");
+      setShowConfirmation(false);
+      dispatch(fetchUsers()); // Re-fetch users after deletion
     } catch (error) {
-      console.error("Error removing user", error);
       toast.error("Failed to remove user. Server error.");
     } finally {
-      // Ensure any final actions happen, like clearing the selected user, if needed
       setSelectedUser(null);
     }
   };
@@ -84,7 +66,7 @@ const UsersList: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
+            {users.map((user: User, index: number) => (
               <tr key={user.userId}>
                 <td>{index + 1}</td>
                 <td>{user.username || "N/A"}</td>

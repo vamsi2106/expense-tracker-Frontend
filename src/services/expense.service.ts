@@ -1,3 +1,4 @@
+// src/services/expense.service.ts
 import axiosInstance from './axios';
 import { ExpenseDetails } from '../Interface/expense.interface';
 
@@ -13,7 +14,6 @@ export class ExpensesService {
       throw error; // Throw to handle in UI with state management
     }
   }
-
 
   // Method to post expense details
   async postExpenseDetails(expenseData: any) {

@@ -9,6 +9,7 @@ import LoadingBar, { LoadingBarRef } from "react-top-loading-bar";
 import axios from "axios"; // Import axios for API calls
 import { toast, ToastContainer } from "react-toastify"; // Import toast for notifications
 import "react-toastify/dist/ReactToastify.css";
+import { checkEmail } from "../../services/user.services";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -39,11 +40,9 @@ export default function LoginPage() {
   const handleLoginClick = async () => {
     if (email.endsWith("@g7cr.com")) {
       try {
-        const response: any = await axios.post(
-          "http://localhost:5000/users/check-email",
-          { email }
-        );
-        if (response.data.userFound) {
+        const response: any = await checkEmail(email);
+        console.log("fetching user login page", response);
+        if (response.userFound) {
           loadingBarRef.current?.continuousStart();
           window.location.href = authUrl; // Redirect to Microsoft login
         } else {
