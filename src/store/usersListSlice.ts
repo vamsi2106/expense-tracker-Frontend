@@ -4,6 +4,7 @@ import {
   fetchUsers as fetchUsersService,
   deleteUser as deleteUserService,
 } from "../services/user.services";
+import usersListReducer from "./usersListSlice"; // Ensure this is imported
 
 interface User {
   role: string;

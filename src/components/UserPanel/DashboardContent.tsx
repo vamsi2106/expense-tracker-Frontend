@@ -11,48 +11,117 @@ import {
   PieChart,
   Pie,
   Cell,
+  BarChart,
+  Bar,
 } from "recharts";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../../store";
+import {
+  fetchExpensesGroupedByWeek,
+  fetchExpensesGroupedByCategory,
+  fetchExpensesGroupedByMonth,
+  fetchExpensesGroupedByYear,
+} from "../../store/expenses.slice";
 import "./User.css";
+
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
 
-interface Expense {
-  id: number;
-  name: string;
-  amount: number;
-  category: string;
-  date: string;
-}
+const DashboardContent: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const userId = useSelector((state: RootState) => state.user.userid);
+  const expensesGroupedByWeek = useSelector(
+    (state: RootState) => state.expenses.expensesFilterdByWeek
+  );
+  const expensesGroupedByCategory = useSelector(
+    (state: RootState) => state.expenses.expensesFilterdByCategory
+  );
+  const expensesGroupedByMonth = useSelector(
+    (state: RootState) => state.expenses.expensesFilterdByMonth
+  );
+  const expensesGroupedByYear = useSelector(
+    (state: RootState) => state.expenses.expensesFilterdByYear
+  );
 
-const DashboardContent: React.FC<{ expenses: Expense[] }> = ({ expenses }) => {
   const [chartData, setChartData] = useState<
     { name: string; amount: number }[]
   >([]);
   const [pieChartData, setPieChartData] = useState<
     { name: string; value: number }[]
   >([]);
+  const [barChartData, setBarChartData] = useState<
+    { name: string; amount: number }[]
+  >([]);
+  const [yearlyPieChartData, setYearlyPieChartData] = useState<
+    { name: string; value: number }[]
+  >([]);
 
   useEffect(() => {
-    // Simulating data fetching for the line chart
-    const lineChartData = [
-      { name: "Week 1", amount: 200 },
-      { name: "Week 2", amount: 350 },
-      { name: "Week 3", amount: 280 },
-      { name: "Week 4", amount: 420 },
-    ];
-    setChartData(lineChartData);
+    if (userId) {
+      dispatch(
+        fetchExpensesGroupedByWeek({
+          userId,
+          month: new Date().getMonth() + 1,
+          year: new Date().getFullYear(),
+        })
+      );
+      dispatch(
+        fetchExpensesGroupedByCategory({
+          userId,
+          startDate: "2023-01-01",
+          endDate: "2023-12-31",
+        })
+      );
+      dispatch(
+        fetchExpensesGroupedByMonth({
+          userId,
+          year: new Date().getFullYear(),
+        })
+      );
+      dispatch(fetchExpensesGroupedByYear({ userId }));
+    }
+  }, [dispatch, userId]);
 
-    // Prepare data for the pie chart
-    const categoryTotals = expenses.reduce((acc, expense) => {
-      acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
-      return acc;
-    }, {} as Record<string, number>);
+  useEffect(() => {
+    if (expensesGroupedByWeek) {
+      const lineChartData = expensesGroupedByWeek.map(
+        (week: any, index: number) => ({
+          name: `Week ${index + 1}`,
+          amount: week.total_amount,
+        })
+      );
+      setChartData(lineChartData);
+    }
+  }, [expensesGroupedByWeek]);
 
-    const pieData = Object.entries(categoryTotals).map(([name, value]) => ({
-      name,
-      value,
-    }));
-    setPieChartData(pieData);
-  }, [expenses]);
+  useEffect(() => {
+    if (expensesGroupedByCategory) {
+      const pieData = expensesGroupedByCategory.map((category: any) => ({
+        name: category.category,
+        value: category.total_amount,
+      }));
+      setPieChartData(pieData);
+    }
+  }, [expensesGroupedByCategory]);
+
+  useEffect(() => {
+    if (expensesGroupedByMonth) {
+      const barData = expensesGroupedByMonth.map((month: any) => ({
+        name: `Month ${month.month}`,
+        amount: month.total_amount,
+      }));
+      setBarChartData(barData);
+    }
+  }, [expensesGroupedByMonth]);
+
+  useEffect(() => {
+    if (expensesGroupedByYear) {
+      const yearlyPieData = expensesGroupedByYear.map((year: any) => ({
+        name: `Year ${year.year}`,
+        value: year.total_amount,
+      }));
+      setYearlyPieChartData(yearlyPieData);
+    }
+  }, [expensesGroupedByYear]);
 
   return (
     <div className="dashboard-charts">
@@ -87,6 +156,46 @@ const DashboardContent: React.FC<{ expenses: Expense[] }> = ({ expenses }) => {
               }
             >
               {pieChartData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </Pie>
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="chart-container">
+        <h4>Monthly Expenses</h4>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={barChartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="amount" fill="#8884d8" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="chart-container">
+        <h4>Yearly Expenses</h4>
+        <ResponsiveContainer width="100%" height={300}>
+          <PieChart>
+            <Pie
+              data={yearlyPieChartData}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              outerRadius={80}
+              fill="#8884d8"
+              dataKey="value"
+              label={({ name, percent }) =>
+                `${name} ${(percent * 100).toFixed(0)}%`
+              }
+            >
+              {yearlyPieChartData.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={COLORS[index % COLORS.length]}

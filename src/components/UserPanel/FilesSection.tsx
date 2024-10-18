@@ -1,32 +1,44 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaPlus, FaDownload, FaTrash } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../../store";
+import { fetchFiles, createFile, deleteFile } from "../../store/files.slice";
 import "./User.css";
+
 interface File {
   id: number;
   name: string;
   uploadDate: string;
 }
 
-interface FilesSectionProps {
-  files: File[];
-  setFiles: React.Dispatch<React.SetStateAction<File[]>>;
-}
+const FilesSection: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { files, page_status, message } = useSelector(
+    (state: RootState) => state.files
+  );
+  const userId = useSelector((state: RootState) => state.user.userid);
 
-const FilesSection: React.FC<FilesSectionProps> = ({ files, setFiles }) => {
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const newFile: File = {
-        id: files.length + 1,
-        name: file.name,
-        uploadDate: new Date().toISOString().split("T")[0],
-      };
-      setFiles([...files, newFile]);
+  useEffect(() => {
+    if (userId) {
+      dispatch(fetchFiles({ userId }));
+    }
+  }, [dispatch, userId]);
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.currentTarget.files; // Correctly accessing the first file
+    console.log(file);
+    if (file && userId) {
+      const formData = new FormData();
+      formData.append("file", files[0]);
+      console.log(formData);
+      dispatch(createFile({ userId, fileData: formData }));
     }
   };
 
   const handleDeleteFile = (id: number) => {
-    setFiles(files.filter((file) => file.id !== id));
+    if (userId) {
+      dispatch(deleteFile({ userId, id: id.toString() }));
+    }
   };
 
   return (
@@ -66,6 +78,8 @@ const FilesSection: React.FC<FilesSectionProps> = ({ files, setFiles }) => {
           ))}
         </tbody>
       </table>
+      {page_status === "loading" && <p>Loading...</p>}
+      {message && <p className="text-danger">{message}</p>}
     </div>
   );
 };

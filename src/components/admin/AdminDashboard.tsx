@@ -9,8 +9,6 @@ import Logout from "../authentication/Logout";
 import RegisterUser from "./RegisterUser/RegisterUser";
 import UsersList from "../admin/UsersList/UsersList";
 import "./admin.css";
-import NotFound from "./Not-Found";
-import HomePage from "./HomePage/HomePage";
 
 const AdminDashboard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -44,7 +42,10 @@ const AdminDashboard: React.FC = () => {
           </h1>
           <img
             className="admin-profile-img"
-            src={user.profileImg ?? "default-image-url.jpg"}
+            src={
+              user.profileImg ??
+              "https://www.freepnglogos.com/uploads/student-png/student-png-sammilani-mahavidyalaya-undergraduate-and-24.png"
+            }
           />
           <div>
             <strong className="admin-subtitle">{user.username}</strong>
@@ -71,7 +72,7 @@ const AdminDashboard: React.FC = () => {
         </ul>
       </nav>
       <div className="admin-content">
-        <header className="content-header">
+        <header className="content-header-1">
           <h2>Expenses Tracker Admin Dashboard</h2>
         </header>
         <main className="content-main">

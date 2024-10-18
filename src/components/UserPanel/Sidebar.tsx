@@ -1,3 +1,4 @@
+// src/components/UserPanel/Sidebar.tsx
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -8,6 +9,7 @@ import {
 } from "react-icons/fa";
 
 import "./User.css";
+import Logout from "../authentication/Logout";
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
@@ -19,7 +21,6 @@ const Sidebar: React.FC = () => {
           <span className="expense">Expense</span>{" "}
           <span className="tracker">Tracker</span>
         </h1>
-
       </div>
       <ul className="nav-links">
         <li className={location.pathname === "/user" ? "active" : ""}>
@@ -41,10 +42,7 @@ const Sidebar: React.FC = () => {
           </Link>
         </li>
         <li className="logout">
-          <Link to="/logout">
-            <FaSignOutAlt />
-            <span>Logout</span>
-          </Link>
+          <Logout />
         </li>
       </ul>
     </nav>

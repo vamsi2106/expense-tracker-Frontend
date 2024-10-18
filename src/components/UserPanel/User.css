@@ -85,6 +85,7 @@
 }
 
 .content {
+  overflow-y: scroll;
   flex-grow: 1;
   padding: 20px;
   background-color: #ecf0f1;
