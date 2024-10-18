@@ -15,7 +15,7 @@ import NotFound from "../components/admin/Not-Found";
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/" element={<LoginPage />} />
       <Route path="/runway" element={<Runway />} />
       {/* Admin routes */}
       <Route

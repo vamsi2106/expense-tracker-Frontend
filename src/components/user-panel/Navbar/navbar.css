@@ -1,7 +1,11 @@
-.navbar {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 999; /* Adjust this to ensure it's below the modal */
-  }
-  
+.navbar-link {
+  margin: 12px;
+  font-size: 25px;
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.navbar-link:hover {
+  color: orange;
+}

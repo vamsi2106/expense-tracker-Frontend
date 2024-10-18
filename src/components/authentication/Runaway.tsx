@@ -78,13 +78,13 @@ function Runway() {
             navigate("/user/home");
           } else {
             console.error("Invalid role.");
-            navigate("/login");
+            navigate("/");
           }
         } catch (e) {
           console.error(e);
           setProgress(100);
           loadingBarRef.current?.complete();
-          navigate("/login");
+          navigate("/");
         }
       };
 

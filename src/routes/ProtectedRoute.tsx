@@ -19,7 +19,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // If the token doesn't exist, redirect to the login page
   if (!token) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/" />;
   }
 
   // If a required role is specified, check if the user's role matches it
@@ -31,7 +31,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     } else if (userRole === "user") {
       return <Navigate to="/user" />;
     } else {
-      return <Navigate to="/login" />;
+      return <Navigate to="/" />;
     }
   }
 

@@ -12,6 +12,7 @@ import App from "./App";
 // Get the root DOM element
 const container = document.getElementById("root");
 
+
 // Ensure the container exists before calling createRoot
 if (container) {
   const root = createRoot(container); // Use createRoot instead of ReactDOM.render

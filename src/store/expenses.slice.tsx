@@ -110,6 +110,7 @@ export const fetchExpensesGroupedByDate = createAsyncThunk(
   async ({ offset, file_id }: { offset: number; file_id?: string }, { rejectWithValue }) => {
     try {
       const response = await expensesService.getExpensesGroupedByDate(offset, file_id);
+      console.log(response);
       return response;
     } catch (error: any) {
       return rejectWithValue(error || 'Failed to fetch expenses grouped by date');
