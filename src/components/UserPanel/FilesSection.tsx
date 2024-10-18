@@ -29,7 +29,7 @@ const FilesSection: React.FC = () => {
     console.log(file);
     if (file && userId) {
       const formData = new FormData();
-      formData.append("file", files[0]);
+      formData.append("file", file[0]); // Append the file object, not just the name
       console.log(formData);
       dispatch(createFile({ userId, fileData: formData }));
     }
@@ -48,7 +48,12 @@ const FilesSection: React.FC = () => {
         <label htmlFor="file-upload" className="btn-primary">
           <FaPlus /> Upload File
         </label>
-        <input id="file-upload" type="file" onChange={handleFileUpload} />
+        <input
+          id="file-upload"
+          type="file"
+          accept=".csv"
+          onChange={handleFileUpload}
+        />
       </div>
       <table className="files-table">
         <thead>
