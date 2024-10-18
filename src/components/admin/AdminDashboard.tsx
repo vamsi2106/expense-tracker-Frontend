@@ -1,51 +1,85 @@
-import React, { useEffect } from "react";
-import { Link, Routes, Route } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store";
-import { fetchUsers } from "../../store/usersListSlice"; // Import fetchUsers
+// src/components/admin/AdminDashboard.tsx
+import React, { useState, useEffect } from "react";
+import { Link, Routes, Route, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../../store";
+import { fetchUsers } from "../../store/usersListSlice";
+import { FaUserPlus, FaUsers, FaSignOutAlt } from "react-icons/fa";
 import Logout from "../authentication/Logout";
-import RegisterUser from "./RegisterUser";
-import UsersList from "./UsersList";
-import RemoveUser from "./RemoveUser";
-import "./admin.css"; // Import your CSS file
+import RegisterUser from "./RegisterUser/RegisterUser";
+import UsersList from "../admin/UsersList/UsersList";
+import "./admin.css";
+import NotFound from "./Not-Found";
+import HomePage from "./HomePage/HomePage";
 
 const AdminDashboard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const location = useLocation();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const user = useSelector((state: RootState) => state.user);
 
-  // Fetch users when the dashboard loads
   useEffect(() => {
-    const token = localStorage.getItem("token"); // Retrieve token from localStorage or your preferred method
+    const token = localStorage.getItem("token");
     if (token) {
-      dispatch(fetchUsers(token)); // Dispatch fetchUsers with the token
+      dispatch(fetchUsers());
     }
   }, [dispatch]);
 
-  return (
-    <div className="admin-dashboard">
+  const navItems = [
+    { path: "/admin/register", icon: <FaUserPlus />, text: "Register User" },
+    { path: "/admin/users", icon: <FaUsers />, text: "Users List" },
+  ];
 
-      <header className="admin-header">
-        <h1 className="admin-nav">Admin Dashboard</h1>
-        <Logout />
-      </header>
-      <nav className="admin-nav">
-        <ul>
+  return (
+    <div
+      className={`admin-dashboard ${
+        isSidebarOpen ? "sidebar-open" : "sidebar-closed"
+      }`}
+    >
+      <nav className="admin-sidebar">
+        <div className="sidebar-header">
+          <h1 className="admin-title">
+            <span className="expense">Expense</span>{" "}
+            <strong className="tracker">Tracker</strong>
+          </h1>
+          <img
+            className="admin-profile-img"
+            src={user.profileImg ?? "default-image-url.jpg"}
+          />
+          <div>
+            <strong className="admin-subtitle">{user.username}</strong>
+            <br />
+            <strong className="admin-subtitle">{user.userEmail}</strong>
+          </div>
+        </div>
+        <hr style={{ width: "100%" }} />
+        <ul className="nav-links">
+          {navItems.map((item) => (
+            <li
+              key={item.path}
+              className={location.pathname === item.path ? "active" : ""}
+            >
+              <Link to={item.path}>
+                {item.icon}
+                <span>{item.text}</span>
+              </Link>
+            </li>
+          ))}
           <li>
-            <Link to="/admin/register">Register User</Link>
-          </li>
-          <li>
-            <Link to="/admin/users">Users List</Link>
-          </li>
-          <li>
-            <Link to="/admin/remove">Remove User</Link>
+            <Logout />
           </li>
         </ul>
       </nav>
       <div className="admin-content">
-        <Routes>
-          <Route path="register" element={<RegisterUser />} />
-          <Route path="users" element={<UsersList />} />
-          <Route path="remove" element={<RemoveUser />} />
-        </Routes>
+        <header className="content-header">
+          <h2>Expenses Tracker Admin Dashboard</h2>
+        </header>
+        <main className="content-main">
+          <Routes>
+            <Route path="register" element={<RegisterUser />} />
+            <Route path="users" element={<UsersList />} />
+          </Routes>
+        </main>
       </div>
     </div>
   );

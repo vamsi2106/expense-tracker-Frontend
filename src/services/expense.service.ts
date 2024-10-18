@@ -1,11 +1,19 @@
+// src/services/expense.service.ts
 import axiosInstance from './axios';
 import { ExpenseDetails } from '../Interface/expense.interface';
 
+import { getUserId } from '../utils/cookieUtils';
+
+let id =  getUserId("userid")
+console.log("userId", id)
+
+let url = `users/${id}`
 export class ExpensesService {
   // Fetch all expenses
+  
   async getAllExpenses(): Promise<any> {
     try {
-      const response = await axiosInstance.get('/expenses');
+      const response = await axiosInstance.get(url+'/expenses');
       console.log('Fetched Expenses:', response.data);
       return response.data;
     } catch (error) {
@@ -14,13 +22,12 @@ export class ExpensesService {
     }
   }
 
-
   // Method to post expense details
   async postExpenseDetails(expenseData: any) {
     try {
-      let email = "nagasritha@gmail.com";
-      let customExpenseDetails = {email,...expenseData};
-      const response = await axiosInstance.post('/expenses', customExpenseDetails);
+      let user_id = "0b21908b-b55f-47b5-b33f-c7f4ebe61b53";
+      let customExpenseDetails = {user_id,...expenseData};
+      const response = await axiosInstance.post(url+'/expenses', customExpenseDetails);
       return response.data; // Return the successful response data
     } catch (error: any) {
       // Handle error
@@ -43,7 +50,7 @@ export class ExpensesService {
   // Method to delete an expense
   async deleteExpense(id: string): Promise<any> {
     try {
-      const response = await axiosInstance.delete(`/expenses/${id}`);
+      const response = await axiosInstance.delete(url+`/expenses/${id}`);
       console.log('Deleted Expense:', response.data);
       return response.data; // Return successful response data
     } catch (error: any) {
@@ -64,7 +71,7 @@ export class ExpensesService {
   async updateExpense(id: string, updateDetails: ExpenseDetails): Promise<any> {
     try {
       console.log(updateDetails, 'data i got into the services');
-      const response = await axiosInstance.put(`/expenses/${id}`, updateDetails);
+      const response = await axiosInstance.put(url+`/expenses/${id}`, updateDetails);
       console.log('Updated Expense:', response.data);
       return response.data; // Return successful response data
     } catch (error: any) {
@@ -84,7 +91,7 @@ export class ExpensesService {
   // Method to get an expense by ID
   async getExpenseById(id: string): Promise<any> {
     try {
-      const response = await axiosInstance.get(`/expenses/${id}`);
+      const response = await axiosInstance.get(url+`/expenses/${id}`);
       console.log('Fetched Expense by ID:', response.data);
       return response.data; // Return the successful response data
     } catch (error: any) {
@@ -103,8 +110,8 @@ export class ExpensesService {
 
   async getExpensesGroupedByDate(offset:number,file_id?:string){
     try {
-      let url = (file_id!==undefined ? `/expenses/filter/group-by-date?offset=${offset}&file_id=${file_id}` : `/expenses/filter/group-by-date?offset=${offset}`);
-      const response = await axiosInstance.get(url);
+      let formatedUrl = (file_id!==undefined ? `/expenses/filter/group-by-date?offset=${offset}&file_id=${file_id}` : `/expenses/filter/group-by-date?offset=${offset}`);
+      const response = await axiosInstance.get(url+formatedUrl);
       console.log('Fetched Expense by Date:', response.data);
       return response.data; // Return the successful response data
     } catch (error: any) {
@@ -123,8 +130,8 @@ export class ExpensesService {
 
   async getExpensesGroupedByCategory(file_id?:string,startDate?:string,endDate?:string){
     try {
-      let url = (file_id!==undefined ? `/expenses/filter/group-by-category?file_id=${file_id}&startDate=${startDate}&endDate=${endDate}` : `/expenses/filter/group-by-category?startDate=${startDate}&endDate=${endDate}`);
-      const response = await axiosInstance.get(url);
+      let formatedUrl = (file_id!==undefined ? `/expenses/filter/group-by-category?file_id=${file_id}&startDate=${startDate}&endDate=${endDate}` : `/expenses/filter/group-by-category?startDate=${startDate}&endDate=${endDate}`);
+      const response = await axiosInstance.get(url+formatedUrl);
       console.log('Fetched Expense by category:', response.data);
       return response.data; // Return the successful response data
     } catch (error: any) {
@@ -143,8 +150,8 @@ export class ExpensesService {
   
   async getExpensesGroupedByWeek(month?:number,year?:number,file_id?:string){
     try {
-      let url = (file_id!==undefined ? `/expenses/filter/group-by-week?file_id=${file_id}&year=${year}&month=${month}` : `/expenses/filter/group-by-week?&year=${year}&month=${month}`);
-      const response = await axiosInstance.get(url);
+      let formatedUrl = (file_id!==undefined ? `/expenses/filter/group-by-week?file_id=${file_id}&year=${year}&month=${month}` : `/expenses/filter/group-by-week?&year=${year}&month=${month}`);
+      const response = await axiosInstance.get(url+formatedUrl);
       console.log('Fetched Expense by week:', response.data);
       return response.data; // Return the successful response data
     } catch (error: any) {
@@ -162,8 +169,8 @@ export class ExpensesService {
   }
   async getExpensesGroupedByMonth(file_id?:string, year?:number,){
     try {
-      let url = (file_id!==undefined ? `/expenses/filter/group-by-month?file_id=${file_id}&year=${year}` : `/expenses/filter/group-by-month?&year=${year}`);
-      const response = await axiosInstance.get(url);
+      let formatedUrl = (file_id!==undefined ? `/expenses/filter/group-by-month?file_id=${file_id}&year=${year}` : `/expenses/filter/group-by-month?&year=${year}`);
+      const response = await axiosInstance.get(url+formatedUrl);
       console.log('Fetched Expense by month:', response.data);
       return response.data; // Return the successful response data
     } catch (error: any) {
@@ -181,8 +188,8 @@ export class ExpensesService {
   }
   async getExpensesGroupedByYear(file_id?:string){
     try {
-      let url = (file_id!==undefined ? `/expenses/filter/group-by-year?file_id=${file_id}` : `/expenses/filter/group-by-year`);
-      const response = await axiosInstance.get(url);
+      let formatedUrl = (file_id!==undefined ? `/expenses/filter/group-by-year?file_id=${file_id}` : `/expenses/filter/group-by-year`);
+      const response = await axiosInstance.get(url+formatedUrl);
       console.log('Fetched Expense by year:', response.data);
       return response.data; // Return the successful response data
     } catch (error: any) {

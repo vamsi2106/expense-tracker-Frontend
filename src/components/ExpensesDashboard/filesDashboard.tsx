@@ -3,7 +3,7 @@ import { PageStatus } from "../../utils/pageStatus";
 import { useDispatch } from "react-redux";
 import { fetchFiles } from "../../store/files.slice";
 import { useSelector } from "react-redux";
-import { Empty } from "../Empty/empty";
+import { Empty } from "../user-panel/Empty/empty";
 import ExpensesChart from "../charts/lineChart";
 import { ExpensesEChart } from "../charts/recharts";
 import { ExpensesVictoryChart } from "../charts/victoryChart";

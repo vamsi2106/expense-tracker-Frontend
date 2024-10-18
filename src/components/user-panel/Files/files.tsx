@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 // Make sure to import deleteFile
-import { Empty } from "../user-panel/Empty/empty";
-import { deleteFile, fetchFiles } from "../../store/files.slice";
-import { PageStatus } from "../../utils/pageStatus";
+import { Empty } from "../Empty/empty";
+import { deleteFile,fetchFiles } from "../../../store/files.slice";
 
 export const Files = () => {
     

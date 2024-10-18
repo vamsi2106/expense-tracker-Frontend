@@ -4,7 +4,8 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { fetchExpensesGroupedByCategory } from '../../store/expenses.slice';
 import { useDispatch } from 'react-redux';
 import { PageStatus } from '../../utils/pageStatus';
-import { Loading } from '../Loading/loading';
+import { Loading } from '../user-panel/Loading/loading';
+
 
 // Register necessary chart components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -139,7 +140,7 @@ const CategoryPieChart: React.FC<PieChartProps> = ({id}) => {
             case pageStatusObject.empty:
                 return <p>There are no existing expenses in the selected period</p>;
             case pageStatusObject.loading:
-                return <Loading />;
+                return <Loading/>;
             case pageStatusObject.success:
                 return successOutput();
             case pageStatusObject.error:

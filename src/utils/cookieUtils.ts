@@ -9,6 +9,10 @@ export const getCookie = (name: string) => {
   return Cookies.get(name) || "";
 };
 
+export const getUserId = (userId: string) => {
+  return Cookies.get("userId") || "";
+}
+
 export const removeCookie = (name: string) => {
   document.cookie =
     name + "=; Max-Age=0; path=/; domain=" + window.location.hostname;

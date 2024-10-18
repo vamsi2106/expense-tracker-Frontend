@@ -3,7 +3,7 @@ import { VictoryBar, VictoryChart, VictoryAxis, VictoryTooltip } from 'victory';
 import { fetchExpensesGroupedByWeek } from '../../store/expenses.slice';
 import { useDispatch } from 'react-redux';
 import { PageStatus } from '../../utils/pageStatus';
-import { Loading } from '../Loading/loading';
+import { Loading } from '../user-panel/Loading/loading';
 
 interface ChartData {
   week: string;

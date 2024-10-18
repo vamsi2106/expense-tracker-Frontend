@@ -1,17 +1,13 @@
 import { useState } from "react";
-import { Navbar } from "../../components/Navbar/navbar";
-import ExpensesChart from "../../components/charts/lineChart";
-import { ExpensesEChart } from "../../components/charts/recharts";
-import { ExpensesVictoryChart } from "../../components/charts/victoryChart";
-//import PieChart from "../../components/charts/pieChart";
+import { Navbar } from "../../components/user-panel/Navbar/navbar";
 import { ExpensesDashboard } from "../../components/ExpensesDashboard/expensesDashboard";
 import { FilesDashboard } from "../../components/ExpensesDashboard/filesDashboard";
 
 export const Dashboard = () => {
-    const tabs = {
-        files: 'FILES',
-        expenses: 'EXPENSES'
-    }
+  const tabs = {
+    files: "FILES",
+    expenses: "EXPENSES",
+  };
 
     const [tab, setTab] = useState<string>(tabs.expenses);
     const changeTab = (existingTab: string) => {
@@ -40,5 +36,6 @@ export const Dashboard = () => {
 
             {renderDashboard()}
         </div>
-    )
+    
+  );
 };
