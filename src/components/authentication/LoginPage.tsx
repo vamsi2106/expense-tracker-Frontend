@@ -6,7 +6,6 @@ import "../../assets/styles/auth.css";
 import microsoft from "../../assets/images/microsoft.png";
 import loginImg from "../../assets/images/logInImg.png";
 import LoadingBar, { LoadingBarRef } from "react-top-loading-bar";
-import axios from "axios"; // Import axios for API calls
 import { toast, ToastContainer } from "react-toastify"; // Import toast for notifications
 import "react-toastify/dist/ReactToastify.css";
 import { checkEmail } from "../../services/user.services";

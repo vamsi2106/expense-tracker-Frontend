@@ -1,10 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import userReducer from "./userSlice";
-import expensesReducer from "./expenses.slice";
-import filesReducer from "./files.slice";
-import usersListReducer from "./usersListSlice"; // Ensure this is imported
+import userReducer from "./slices/user/userSlice";
+import usersListReducer from "./slices/user/usersListSlice";
+import expenseReducer from "./slices/expenses/expenses.slice";
+import categoryReducer from "./slices/category/categorySlice";
+import tagReducer from "./slices/tag/tagSlice";
+import recurringExpenseReducer from "./recurringExpensesSlice";
+import filesReducer from "./slices/file/fileSlice";
 
 const persistConfig = {
   key: "root",
@@ -16,9 +19,12 @@ const persistedUserReducer = persistReducer(persistConfig, userReducer);
 const store = configureStore({
   reducer: {
     user: persistedUserReducer,
-    expenses: expensesReducer,
+    usersList: usersListReducer,
+    expenses: expenseReducer,
+    categories: categoryReducer,
+    tags: tagReducer,
+    recurringExpenses: recurringExpenseReducer,
     files: filesReducer,
-    usersList: usersListReducer, // Ensure this is added
   },
 });
 

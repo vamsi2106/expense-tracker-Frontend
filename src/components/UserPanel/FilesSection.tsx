@@ -1,12 +1,17 @@
-import React, { useEffect } from "react";
-import { FaPlus, FaDownload, FaTrash } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../store";
-import { fetchFiles, createFile, deleteFile } from "../../store/files.slice";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import {
+  fetchFiles,
+  createFile,
+  deleteFile,
+} from "../../store/slices/file/fileSlice";
 import "./User.css";
 
-interface File {
-  id: number;
+interface FileData {
+  id: string;
   name: string;
   uploadDate: string;
 }
@@ -17,6 +22,13 @@ const FilesSection: React.FC = () => {
     (state: RootState) => state.files
   );
   const userId = useSelector((state: RootState) => state.user.userid);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    if (page_status === "loading") {
+      toast.warning("Loading...", { autoClose: 3000 });
+    }
+  }, [page_status]);
 
   useEffect(() => {
     if (userId) {
@@ -24,67 +36,65 @@ const FilesSection: React.FC = () => {
     }
   }, [dispatch, userId]);
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.currentTarget.files; // Correctly accessing the first file
-    console.log(file);
-    if (file && userId) {
-      const formData = new FormData();
-      formData.append("file", file[0]); // Append the file object, not just the name
-      console.log(formData);
-      dispatch(createFile({ userId, fileData: formData }));
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
     }
   };
 
-  const handleDeleteFile = (id: number) => {
+  const handleUploadFile = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (selectedFile && userId) {
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      dispatch(createFile({ userId, fileData: formData }));
+      toast.success("File uploaded successfully!");
+      setSelectedFile(null);
+    }
+  };
+
+  const handleDeleteFile = (id: string) => {
     if (userId) {
-      dispatch(deleteFile({ userId, id: id.toString() }));
+      dispatch(deleteFile({ userId, id }));
+      toast.error("File deleted!");
     }
   };
 
   return (
     <div className="files-section">
-      <h3>Uploaded Files</h3>
-      <div className="file-upload">
-        <label htmlFor="file-upload" className="btn-primary">
-          <FaPlus /> Upload File
-        </label>
-        <input
-          id="file-upload"
-          type="file"
-          accept=".csv"
-          onChange={handleFileUpload}
-        />
-      </div>
+      <ToastContainer />
+      <h3>Manage Files</h3>
+      <form onSubmit={handleUploadFile} className="file-form">
+        <input type="file" onChange={handleFileChange} required />
+        <button type="submit" className="btn-primary">
+          Upload File
+        </button>
+      </form>
       <table className="files-table">
         <thead>
           <tr>
-            <th>File Name</th>
+            <th>Name</th>
             <th>Upload Date</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {files.map((file) => (
+          {files.map((file: FileData) => (
             <tr key={file.id}>
               <td>{file.name}</td>
-              <td>{file.uploadDate}</td>
+              <td>{new Date(file.uploadDate).toDateString()}</td>
               <td>
-                <button className="btn-icon">
-                  <FaDownload />
-                </button>
                 <button
                   onClick={() => handleDeleteFile(file.id)}
                   className="btn-icon delete"
                 >
-                  <FaTrash />
+                  Delete
                 </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      {page_status === "loading" && <p>Loading...</p>}
-      {message && <p className="text-danger">{message}</p>}
     </div>
   );
 };

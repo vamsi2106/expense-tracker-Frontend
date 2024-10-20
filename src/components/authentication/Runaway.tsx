@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { setCookie, removeCookie } from "../../utils/cookieUtils";
 import { useDispatch } from "react-redux";
-import { setUser } from "../../store/userSlice";
+import { setUser } from "../../store/slices/user/userSlice";
 import LoadingBar, { LoadingBarRef } from "react-top-loading-bar";
 import { Grid } from "react-loader-spinner";
 

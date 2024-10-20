@@ -3,21 +3,23 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../store";
 import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Import the toastify CSS
+import "react-toastify/dist/ReactToastify.css";
 import {
   fetchExpenses,
   createExpense,
   updateExpense,
   deleteExpense,
-} from "../../store/expenses.slice";
+} from "../../store/slices/expenses/expenses.slice";
 import "./User.css";
 
 interface Expense {
-  id: number;
+  id: string;
   name: string;
   amount: number;
   category: string;
   date: string;
+  description?: string; // Optional field
+  file_id?: string; // Optional field
 }
 
 const ExpensesSection: React.FC = () => {
@@ -48,15 +50,18 @@ const ExpensesSection: React.FC = () => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const newExpense = {
-      user_id: userId, // Ensure userId is included
-      name: formData.get("name") as string,
       amount: Number(formData.get("amount")),
-      category: formData.get("category") as string,
       date: formData.get("date") as string,
+      name: formData.get("name") as string,
+      category: formData.get("category") as string,
+      transaction_type: "expense", // Assuming default type is 'expense'
+      currency: "INR", // Assuming default currency is 'INR'
+      description: (formData.get("description") as string) || "", // Optional
+      file_id: (formData.get("file_id") as string) || "", // Optional
     };
     if (userId) {
       dispatch(createExpense({ userId, expenseData: newExpense }));
-      toast.success("Expense added successfully!"); // Toast notification
+      toast.success("Expense added successfully!");
     }
     e.currentTarget.reset();
   };
@@ -70,24 +75,26 @@ const ExpensesSection: React.FC = () => {
       amount: Number(formData.get("amount")),
       category: formData.get("category") as string,
       date: formData.get("date") as string,
+      description: (formData.get("description") as string) || "", // Optional
+      file_id: (formData.get("file_id") as string) || "", // Optional
     };
     if (userId) {
       dispatch(
         updateExpense({
           userId,
-          id: updatedExpense.id.toString(),
+          id: updatedExpense.id,
           updateDetails: updatedExpense,
         })
       );
-      toast.info("Expense updated successfully!"); // Toast notification
+      toast.info("Expense updated successfully!");
     }
     setEditingExpense(null);
   };
 
-  const handleDeleteExpense = (id: number) => {
+  const handleDeleteExpense = (id: string) => {
     if (userId) {
-      dispatch(deleteExpense({ userId, id: id.toString() }));
-      toast.error("Expense deleted!"); // Toast notification
+      dispatch(deleteExpense({ userId, id }));
+      toast.error("Expense deleted!");
     }
   };
 
@@ -138,6 +145,20 @@ const ExpensesSection: React.FC = () => {
             name="date"
             defaultValue={editingExpense?.date}
             required
+          />
+          <input
+            style={{ width: "20%", margin: "5px" }}
+            type="text"
+            name="description"
+            placeholder="Description (optional)"
+            defaultValue={editingExpense?.description}
+          />
+          <input
+            style={{ width: "20%", margin: "5px" }}
+            type="text"
+            name="file_id"
+            placeholder="File ID (optional)"
+            defaultValue={editingExpense?.file_id}
           />
           <button
             style={{ width: "14%", margin: "5px" }}

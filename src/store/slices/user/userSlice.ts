@@ -1,6 +1,6 @@
 // src/store/userSlice.ts
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { checkEmail } from "../services/user.services";
+import { checkEmail } from "../../../services/user.services";
 
 interface UserState {
   token: string | null;

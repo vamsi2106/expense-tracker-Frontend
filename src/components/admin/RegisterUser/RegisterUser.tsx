@@ -8,8 +8,9 @@ import {
   FaUserTag,
   FaCloudUploadAlt,
 } from "react-icons/fa";
-import { ToastContainer, toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import Toast CSS
+import { Modal, Button } from "antd";
 import "./RegisterUser.css"; // Custom CSS
 import { registerUser } from "../../../services/user.services";
 
@@ -19,11 +20,25 @@ const RegisterUser: React.FC = () => {
   const [role, setRole] = useState("user");
   const [userImageUrl, setuserImageUrl] = useState(""); // Updated from profileImage
   const [isUploading, setIsUploading] = useState(false);
-  const [isImageUploaded, setIsImageUploaded] = useState(false); // Track image upload status
+  const [emailError, setEmailError] = useState(""); // Track email validation error
+  const [showConfirmation, setShowConfirmation] = useState(false); // Track confirmation modal visibility
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const token = useSelector((state: RootState) => state.user.token);
+
+  const orgEmailDomain = process.env.REACT_APP_ORG_EMAIL_DOMAIN;
+
+  // Validate email domain
+  const validateEmailDomain = (email: string) => {
+    const emailDomain = email.split("@")[1];
+    if (emailDomain !== orgEmailDomain) {
+      setEmailError(`Invalid email id. Please use a ${orgEmailDomain} email.`);
+      return false;
+    }
+    setEmailError("");
+    return true;
+  };
 
   // Handle Image Upload with Toast notifications
   const handleImageUpload = async (
@@ -43,11 +58,9 @@ const RegisterUser: React.FC = () => {
         formData
       );
       setuserImageUrl(response.data.secure_url);
-      setIsImageUploaded(true); // Set image upload status to true
-      toast.success(`Image uploaded successfully! ${response.data.secure_url}`); // Show success toast
+      toast.success(`Image uploaded successfully!`); // Show success toast
     } catch (error) {
       console.error("Error uploading image", error);
-      setIsImageUploaded(false); // Set image upload status to false
       toast.error("Failed to upload image."); // Show error toast
     } finally {
       setIsUploading(false);
@@ -57,6 +70,16 @@ const RegisterUser: React.FC = () => {
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateEmailDomain(email)) return;
+
+    if (!userImageUrl) {
+      setShowConfirmation(true);
+    } else {
+      await registerUserHandler();
+    }
+  };
+
+  const registerUserHandler = async () => {
     try {
       await registerUser({ username, email, role, userImageUrl });
       toast.success("User registered and invitation sent successfully.");
@@ -64,10 +87,15 @@ const RegisterUser: React.FC = () => {
       setEmail("");
       setRole("user");
       setuserImageUrl("");
-      setIsImageUploaded(false); // Reset upload status after successful registration
     } catch (error) {
       toast.error("Failed to register user or send invitation.");
     }
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const email = e.target.value;
+    setEmail(email);
+    validateEmailDomain(email);
   };
 
   return (
@@ -115,11 +143,17 @@ const RegisterUser: React.FC = () => {
           <input
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={handleEmailChange}
             required
             className="input-field"
             placeholder="Email"
+            style={{ borderColor: emailError ? "red" : "initial" }}
           />
+          {emailError && (
+            <p className="error-text" style={{ color: "red" }}>
+              {emailError}
+            </p>
+          )}
         </div>
         <div className="input-container">
           <FaUserTag className="input-icon" />
@@ -135,11 +169,26 @@ const RegisterUser: React.FC = () => {
         <button
           type="submit"
           className="submit-btn"
-          disabled={isUploading || !isImageUploaded} // Disable if image is uploading or not uploaded yet
+          disabled={isUploading} // Disable if image is uploading
         >
           {isUploading ? "Uploading..." : "Register"}
         </button>
       </form>
+
+      {/* Confirmation Modal */}
+      <Modal
+        title="Confirm Registration"
+        visible={showConfirmation}
+        onOk={async () => {
+          setShowConfirmation(false);
+          await registerUserHandler();
+        }}
+        onCancel={() => setShowConfirmation(false)}
+        okText="Continue"
+        cancelText="Cancel"
+      >
+        <p>Are you sure you want to continue without a profile image?</p>
+      </Modal>
 
       {/* Toast Container for notifications */}
       <ToastContainer />

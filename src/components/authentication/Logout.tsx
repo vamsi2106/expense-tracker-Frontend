@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { logout } from "../../store/userSlice";
+import { logout } from "../../store/slices/user/userSlice";
 import { removeCookie } from "../../utils/cookieUtils";
 import { FaSignOutAlt } from "react-icons/fa";
 import "../../assets/styles/auth.css";

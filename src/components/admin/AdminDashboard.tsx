@@ -3,12 +3,13 @@ import React, { useState, useEffect } from "react";
 import { Link, Routes, Route, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../store";
-import { fetchUsers } from "../../store/usersListSlice";
-import { FaUserPlus, FaUsers, FaSignOutAlt } from "react-icons/fa";
+import { fetchUsers } from "../../store/slices/user/usersListSlice";
+import { FaUserPlus, FaUsers, FaSignOutAlt, FaHouseUser } from "react-icons/fa";
 import Logout from "../authentication/Logout";
 import RegisterUser from "./RegisterUser/RegisterUser";
 import UsersList from "../admin/UsersList/UsersList";
 import "./admin.css";
+import HomePage from "./HomePage/HomePage";
 
 const AdminDashboard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -24,6 +25,7 @@ const AdminDashboard: React.FC = () => {
   }, [dispatch]);
 
   const navItems = [
+    { path: "/admin/", icon: <FaHouseUser />, text: "Dashboard" },
     { path: "/admin/register", icon: <FaUserPlus />, text: "Register User" },
     { path: "/admin/users", icon: <FaUsers />, text: "Users List" },
   ];
@@ -77,6 +79,7 @@ const AdminDashboard: React.FC = () => {
         </header>
         <main className="content-main">
           <Routes>
+            <Route path="/" element={<HomePage />} />
             <Route path="register" element={<RegisterUser />} />
             <Route path="users" element={<UsersList />} />
           </Routes>

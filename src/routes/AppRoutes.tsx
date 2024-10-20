@@ -51,7 +51,7 @@ const AppRoutes: React.FC = () => {
       {/* Add more protected routes as needed */}
       {/*Routes added by nagasritha*/}
       {/*temp route*/}
-      <Route path="/downloadfile" element={<DownloadFile/>}/>
+      <Route path="/downloadfile" element={<DownloadFile />} />
     </Routes>
   );
 };
