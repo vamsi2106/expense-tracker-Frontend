@@ -23,7 +23,7 @@ const Logout: React.FC = () => {
     const azureLogoutUrl = `https://login.microsoftonline.com/${
       process.env.REACT_APP_TENANT_ID
     }/oauth2/v2.0/logout?post_logout_redirect_uri=${encodeURIComponent(
-      "http://localhost:3000/login" // Set the login page after logout
+      "http://localhost:3000/" // Set the login page after logout
     )}`;
 
     // Redirect to Azure AD logout URL

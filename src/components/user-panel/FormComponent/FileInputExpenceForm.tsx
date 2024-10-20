@@ -53,6 +53,7 @@ const FileExpenceInputForm = () => {
               name="file"
               type="file"
               accept=".csv"
+              className="input"
               onChange={(event) => {
                 const files = event.currentTarget.files;
                 if (files && files.length > 0) {

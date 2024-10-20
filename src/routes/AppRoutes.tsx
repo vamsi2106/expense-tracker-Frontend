@@ -1,21 +1,22 @@
-// src/routes/AppRoutes.tsx
-import React from "react";
-import { Routes, Route } from "react-router-dom";
-import Home from "../components/admin/HomePage/HomePage";
+import React, { useEffect } from "react";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import LoginPage from "../components/authentication/LoginPage";
 import Runway from "../components/authentication/Runaway";
-//import AdminDashboard from "../components/admin/AdminDashboard"; // Import your Admin Dashboard component
-import UserDashboard from "../components/user-panel/user/UserDashboard"; // Import your User Dashboard component
+import UserDashboard from "../components/user-panel/user/UserDashboard";
 import ProtectedRoute from "./ProtectedRoute";
 import AdminPanel from "../components/admin/AdminDashboard";
 import { ExpensesHome } from "../screen/Home/ExpensesHome";
 import { Dashboard } from "../screen/Dashboard/dashboard";
 import NotFound from "../components/admin/Not-Found";
 
+// Mock function to get token and user role
+const getToken = () => localStorage.getItem("token");
+const getUserRole = () => localStorage.getItem("userRole");
+
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/" element={<LoginPage />} />
       <Route path="/runway" element={<Runway />} />
       {/* Admin routes */}
       <Route
@@ -32,8 +33,7 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route path="*" element={<NotFound />} />
-      {/* Add more protected routes as needed */}
-      {/*Routes added by nagasritha*/}
+      {/* Additional protected routes */}
       <Route
         path="/user/home"
         element={
@@ -42,9 +42,7 @@ const AppRoutes: React.FC = () => {
       />
       <Route
         path="/user/dashboard"
-        element={
-          <ProtectedRoute element={<Dashboard />} requiredRole="user" />
-        }
+        element={<ProtectedRoute element={<Dashboard />} requiredRole="user" />}
       />
     </Routes>
   );

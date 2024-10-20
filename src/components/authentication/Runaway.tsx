@@ -59,9 +59,8 @@ function Runway() {
 
           const { token, role, username, userEmail, userid, userImageUrl } =
             response.data;
-          
-            
-          setCookie("userId", userid)
+
+          setCookie("userId", userid);
           setCookie("token", token, 3);
           setCookie("role", role, 3);
 
@@ -78,7 +77,7 @@ function Runway() {
             navigate("/user/home");
           } else {
             console.error("Invalid role.");
-            navigate("/login");
+            navigate("/");
           }
         } catch (e) {
           console.error(e);
