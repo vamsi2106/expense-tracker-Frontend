@@ -1,3 +1,21 @@
-.emptyImage{
-    margin:30px 0px 30px 0px;
+/* empty.css */
+
+.align-center-of-the-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Centers the content vertically */
+}
+
+.emptyImage {
+    transition: transform 0.3s ease;
+}
+
+.emptyImage:hover {
+    transform: scale(1.1); /* Slightly zoom in the image on hover */
+}
+
+.text-success {
+    color: #4CAF50; /* Adjust color to match your theme */
 }

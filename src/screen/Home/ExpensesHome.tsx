@@ -9,6 +9,8 @@ import { fetchExpenses } from "../../store/expenses.slice";
 import { HomeSuccessPage } from "../../components/user-panel/HomeSuccessPage/homeSuccessPage";
 import { Error } from "../../components/user-panel/ErrorPage/error";
 import { ExpenseModal } from "../../components/user-panel/ExpenseModel/expenseform.model";
+import { AppBar, Toolbar, Button, Typography } from "@mui/material";
+import './home.css'; // Import the updated CSS file
 
 export const ExpensesHome = () => {
   const pageStatusObject = new PageStatus();
@@ -25,32 +27,27 @@ export const ExpensesHome = () => {
   const dispatch = useDispatch();
   const { expenses, page_status } = useSelector((state: any) => state.expenses);
   console.log(page_status, expenses);
-  // Flag to control if expenses have been fetched already
+
   const [hasFetchedData, setHasFetchedData] = useState(false);
 
-  // Show the initial status (welcome screen) for 4 seconds before fetching data
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!hasFetchedData) {
-        // Only fetch data once
-        dispatch<any>(fetchExpenses()); // Fetch expenses after 4 seconds
-        setPageStatus(pageStatusObject.loading); // Set to loading while fetching data
-        setHasFetchedData(true); // Mark data as fetched
+        dispatch<any>(fetchExpenses()); 
+        setPageStatus(pageStatusObject.loading);
+        setHasFetchedData(true);
       }
     }, 4000);
 
-    // Cleanup the timer if the component unmounts
     return () => clearTimeout(timer);
   }, [dispatch, hasFetchedData, pageStatusObject]);
 
-  // Update the page status after the data is fetched and `page_status` changes
   useEffect(() => {
     if (page_status && homePageStatus !== page_status) {
-      setPageStatus(page_status); // Update local state when `page_status` is available
+      setPageStatus(page_status);
     }
   }, [page_status, homePageStatus]);
 
-  // Function to render content based on current status
   const renderContent = () => {
     switch (homePageStatus) {
       case pageStatusObject.initial:
@@ -67,32 +64,61 @@ export const ExpensesHome = () => {
         return null;
     }
   };
+
   const triggerModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-  const changeTab = (selectedTab: string) => {
-    setTab(selectedTab);
-  };
+  const changeTab = (selectedTab: string) => setTab(selectedTab);
 
-  console.log(tab);
   return (
     <div>
       <Navbar />
-      <nav className="navbar bg-light shadow p-3 d-flex gap-2">
-        <div className="d-flex gap-1">
-          <h5 onClick={() => changeTab(tabs.files)}>
-            <b>Files</b>
-          </h5>
-          <h5 onClick={() => changeTab(tabs.expenses)}>
-            <b className="px-4">Expense Details</b>
-          </h5>
-        </div>
-        <div>
-          <button className="btn btn-primary" onClick={triggerModal}>
+      <AppBar position="static" sx={{ backgroundColor: "white", color: "black" }}>
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }} style={{fontWeight: 'bold'}}>
+            Track Your
+          </Typography>
+          <Button 
+            color="inherit" 
+            onClick={() => changeTab(tabs.files)} 
+            variant={tab === tabs.files ? "contained" : "outlined"}
+            sx={{ 
+              backgroundColor: tab === tabs.files ? "black" : "transparent", 
+              color: tab === tabs.files ? "white" : "black", 
+              border: tab === tabs.files ? "none" : "1px solid black", 
+              marginRight: 2,
+              "&:hover": {
+                backgroundColor: "black",
+                color: "white",
+                border: "1px solid black", // Keep border on hover
+              }
+            }}
+          >
+            Files
+          </Button>
+          <Button 
+            color="inherit" 
+            onClick={() => changeTab(tabs.expenses)} 
+            variant={tab === tabs.expenses ? "contained" : "outlined"}
+            sx={{ 
+              backgroundColor: tab === tabs.expenses ? "black" : "transparent", 
+              color: tab === tabs.expenses ? "white" : "black", 
+              border: tab === tabs.expenses ? "none" : "1px solid black", 
+              marginRight: 2,
+              "&:hover": {
+                backgroundColor: "black",
+                color: "white",
+                border: "1px solid black", // Keep border on hover
+              }
+            }}
+          >
+            Expense Details
+          </Button>
+          <Button variant="contained" color="secondary" onClick={triggerModal}>
             Add your Expense
-          </button>
-        </div>
-      </nav>
-      <div className="align-center-to-the-page">{renderContent()}</div>
+          </Button>
+        </Toolbar>
+      </AppBar>
+      <div>{renderContent()}</div>
       <ExpenseModal isOpen={isModalOpen} onClose={closeModal} />
     </div>
   );

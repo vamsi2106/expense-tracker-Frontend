@@ -74,7 +74,7 @@ export default function LoginPage() {
           <div className="login-overlay">
             <div className="login-overlay-panel login-overlay-right">
               <strong className="login-e1">Expenses Tracker</strong>
-              <h1>Welcome Back!</h1>
+              <h1 style={{color: "whitesmoke"}}>Welcome Back!</h1>
               <p>
                 To keep connected with us, please login with your personal info
               </p>
@@ -92,7 +92,6 @@ export default function LoginPage() {
                   <span style={{ transitionDelay: "100ms" }}>a</span>
                   <span style={{ transitionDelay: "150ms" }}>i</span>
                   <span style={{ transitionDelay: "200ms" }}>l</span>
-
                 </label>
               </div>
 

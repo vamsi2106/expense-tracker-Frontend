@@ -4,15 +4,17 @@
   box-sizing: border-box;
 }
 
+
+
 .logout-btn {
   border: 0px;
-  width: 100%;
+  width: 10%;
   font-weight: bold;
   display: flex;
   justify-content: center;
   align-items: center;
   color: #ffffff;
-  background-color: #3a3a3ad3;
+  background-color: #000000;
   text-decoration: none;
   padding: 10px;
   border-radius: 5px;

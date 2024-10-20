@@ -5,7 +5,15 @@ import { fetchExpensesGroupedByCategory } from '../../store/expenses.slice';
 import { useDispatch } from 'react-redux';
 import { PageStatus } from '../../utils/pageStatus';
 import { Loading } from '../user-panel/Loading/loading';
-
+import { JsonToCsvDownloader } from '../ExpensesDashboard/JsonToCsvDownloader';
+import {
+    Box,
+    Button,
+    Grid,
+    TextField,
+    Typography,
+    Paper,
+} from '@mui/material';
 
 // Register necessary chart components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -20,13 +28,12 @@ interface ChartData {
     }[];
 }
 
-interface PieChartProps{
-    id?:string;
+interface PieChartProps {
+    id?: string;
 }
 
-const CategoryPieChart: React.FC<PieChartProps> = ({id}) => {
+const CategoryPieChart: React.FC<PieChartProps> = ({ id }) => {
     let pageStatusObject = new PageStatus();
-    console.log('pie chsrt');
     const [startDate, setStartDate] = useState(() => {
         const date = new Date();
         date.setMonth(date.getMonth() - 1);
@@ -38,6 +45,7 @@ const CategoryPieChart: React.FC<PieChartProps> = ({id}) => {
         return date.toISOString().split('T')[0];
     });
 
+    let [resultExpenses, setExpenses] = useState<any[]>([]);
     const [chartData, setChartData] = useState<ChartData>({
         labels: [],
         datasets: [{
@@ -45,7 +53,7 @@ const CategoryPieChart: React.FC<PieChartProps> = ({id}) => {
             backgroundColor: [],
             borderColor: [],
             borderWidth: 1,
-        }]
+        }],
     });
 
     const [categoryPageStatus, setPageStatus] = useState<string>(pageStatusObject.initial);
@@ -57,12 +65,12 @@ const CategoryPieChart: React.FC<PieChartProps> = ({id}) => {
 
     const fetchResult = async () => {
         setPageStatus(pageStatusObject.loading);
-        let parameters = id===undefined ? { startDate, endDate } :{ startDate, endDate , id}
+        let parameters = id === undefined ? { startDate, endDate } : { startDate, endDate, id };
         const response = await dispatch<any>(fetchExpensesGroupedByCategory(parameters));
 
         if (fetchExpensesGroupedByCategory.fulfilled.match(response)) {
-            const expenseData:any = response.payload;
-
+            const expenseData: any = response.payload;
+            setExpenses(expenseData);
             if (expenseData && expenseData.length > 0) {
                 updateTheChartData(expenseData);
             } else {
@@ -89,7 +97,7 @@ const CategoryPieChart: React.FC<PieChartProps> = ({id}) => {
                 backgroundColor: [],
                 borderColor: [],
                 borderWidth: 1,
-            }]
+            }],
         };
 
         expenseData.forEach((item: any, index: number) => {
@@ -105,6 +113,7 @@ const CategoryPieChart: React.FC<PieChartProps> = ({id}) => {
 
     const options = {
         responsive: true,
+        maintainAspectRatio: false, // This ensures that the chart can fit into the container without stretching
         plugins: {
             legend: {
                 position: 'top' as const,
@@ -130,37 +139,57 @@ const CategoryPieChart: React.FC<PieChartProps> = ({id}) => {
     };
 
     const successOutput = () => (
-        <div className='pie-chart'>
+        <Box sx={{ height: '50vh', width: '50vw', position: 'relative' }}>
             <Pie data={chartData} options={options} />
-        </div>
+            {resultExpenses && resultExpenses.length !== 0 && <JsonToCsvDownloader jsonData={resultExpenses} />}
+        </Box>
     );
 
     const renderChart = () => {
         switch (categoryPageStatus) {
             case pageStatusObject.empty:
-                return <p>There are no existing expenses in the selected period</p>;
+                return <Typography color="error">There are no existing expenses in the selected period</Typography>;
             case pageStatusObject.loading:
-                return <Loading/>;
+                return <Loading />;
             case pageStatusObject.success:
                 return successOutput();
             case pageStatusObject.error:
-                return <p className='text-danger'>Something went wrong</p>;
+                return <Typography color="error">Something went wrong</Typography>;
             default:
                 return null;
         }
     };
 
     return (
-        <div>
-            <h2>Expenses filterd by Category</h2>
-            <label>Select Starting Date</label>
-            <input type='date' onChange={updateStartDate} value={startDate} />
-            <label>Select Ending Date</label>
-            <input type='date' onChange={updateEndDate} value={endDate} />
-            <button className='btn btn-primary' onClick={fetchResult}>Apply</button>
-
+        <Paper elevation={3} sx={{ padding: 3, width: '50vw', height: '80vh' }}>
+            <Typography variant="h4" gutterBottom>
+                Expenses Filtered by Category
+            </Typography>
+            <Grid container spacing={2} marginBottom={2}>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        fullWidth
+                        type="date"
+                        label="Select Starting Date"
+                        onChange={updateStartDate}
+                        value={startDate}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        fullWidth
+                        type="date"
+                        label="Select Ending Date"
+                        onChange={updateEndDate}
+                        value={endDate}
+                    />
+                </Grid>
+            </Grid>
+            <Button variant="contained" color="primary" onClick={fetchResult}>
+                Apply
+            </Button>
             {renderChart()}
-        </div>
+        </Paper>
     );
 };
 

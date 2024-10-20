@@ -4,21 +4,35 @@ import { fetchExpensesGroupedByMonth } from '../../store/expenses.slice';
 import { useDispatch } from 'react-redux';
 import { PageStatus } from '../../utils/pageStatus';
 import { Loading } from '../user-panel/Loading/loading';
+import { JsonToCsvDownloader } from '../ExpensesDashboard/JsonToCsvDownloader';
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+  Card,
+  CardContent,
+  SelectChangeEvent
+} from '@mui/material';
 
 interface ChartData {
-  xAxisData: string[],
-  seriesData: number[]
+  xAxisData: string[];
+  seriesData: number[];
 }
 
-interface ExpensesEChartProps{
-  id?:string
+interface ExpensesEChartProps {
+  id?: string;
 }
 
-export const ExpensesEChart: React.FC<ExpensesEChartProps> = ({id}) => {
+export const ExpensesEChart: React.FC<ExpensesEChartProps> = ({ id }) => {
   const pageStatusObject = new PageStatus();
   const [year, setYear] = useState(() => new Date().getFullYear());
   const [chartData, setChartData] = useState<ChartData>({ xAxisData: [], seriesData: [] });
   const [categoryPageStatus, setPageStatus] = useState<string>(pageStatusObject.initial);
+  const [resultExpenses, setExpenses] = useState<any[]>([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -27,12 +41,12 @@ export const ExpensesEChart: React.FC<ExpensesEChartProps> = ({id}) => {
 
   const fetchResult = async () => {
     setPageStatus(pageStatusObject.loading);
-    let parameters = id===undefined ? { year } : { year , id}
+    let parameters = id === undefined ? { year } : { year, id };
     const response = await dispatch<any>(fetchExpensesGroupedByMonth(parameters));
 
     if (fetchExpensesGroupedByMonth.fulfilled.match(response)) {
       const expenseData: any = response.payload;
-
+      setExpenses(expenseData);
       if (expenseData && expenseData.length > 0) {
         updateTheChartData(expenseData);
       } else {
@@ -62,14 +76,14 @@ export const ExpensesEChart: React.FC<ExpensesEChartProps> = ({id}) => {
 
   const option = {
     tooltip: {
-      trigger: 'axis', // Show tooltip for axis
+      trigger: 'axis',
       formatter: (params: any) => {
-        let result = `${params[0].name}<br/>`; // Month name
+        let result = `${params[0].name}<br/>`;
         params.forEach((item: any) => {
-          result += `${item.seriesName}: ${item.value}<br/>`; // Series name and value
+          result += `${item.seriesName}: ${item.value}<br/>`;
         });
         return result;
-      }
+      },
     },
     xAxis: {
       type: 'category',
@@ -80,30 +94,31 @@ export const ExpensesEChart: React.FC<ExpensesEChartProps> = ({id}) => {
     },
     series: [
       {
-        name: 'Expenses', // Add name for tooltip display
+        name: 'Expenses',
         data: chartData.seriesData,
         type: 'line',
-        smooth: true, // Optional: for smooth lines
+        smooth: true,
       },
     ],
   };
 
   const successOutput = () => (
-    <div className=''>
+    <Box>
       <ReactECharts option={option} />
-    </div>
+      {resultExpenses && resultExpenses.length !== 0 && <JsonToCsvDownloader jsonData={resultExpenses} />}
+    </Box>
   );
 
   const renderChart = () => {
     switch (categoryPageStatus) {
       case pageStatusObject.empty:
-        return <p>There are no existing expenses in the selected period</p>;
+        return <Typography color="textSecondary">There are no existing expenses in the selected period</Typography>;
       case pageStatusObject.loading:
         return <Loading />;
       case pageStatusObject.success:
         return successOutput();
       case pageStatusObject.error:
-        return <p className='text-danger'>Something went wrong</p>;
+        return <Typography color="error">Something went wrong</Typography>;
       default:
         return null;
     }
@@ -117,27 +132,33 @@ export const ExpensesEChart: React.FC<ExpensesEChartProps> = ({id}) => {
     years.push(start);
   }
 
-  const updateYear = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setYear(Number(event.target.value));
-  }
+  // Update the updateYear function to use SelectChangeEvent
+  const updateYear = (event: SelectChangeEvent<number>) => {
+    setYear(event.target.value as number);
+  };
 
   return (
-    <div>
-      <h2>Expenses Filtered by Months</h2>
-      <label>Select Year</label>
-      <select onChange={updateYear}>
-        {years.map((item: number) => {
-          if (item === new Date().getFullYear()) {
-            return <option key={item} value={item} selected>{item}</option>
-          }
-          return (
-            <option key={item} value={item}>{item}</option>
-          )
-        })}
-      </select>
-      <button className='btn btn-primary' onClick={fetchResult}>Apply</button>
-      {renderChart()}
-    </div>
+    <Card>
+      <CardContent>
+        <Typography variant="h5" component="div">
+          Expenses Filtered by Months
+        </Typography>
+        <FormControl fullWidth variant="outlined" sx={{ marginBottom: 2 }}>
+          <InputLabel>Select Year</InputLabel>
+          <Select value={year} onChange={updateYear} label="Select Year">
+            {years.map((item: number) => (
+              <MenuItem key={item} value={item}>
+                {item}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Button variant="contained" color="primary" onClick={fetchResult}>
+          Apply
+        </Button>
+        {renderChart()}
+      </CardContent>
+    </Card>
   );
 };
 

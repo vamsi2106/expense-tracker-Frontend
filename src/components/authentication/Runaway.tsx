@@ -83,7 +83,7 @@ function Runway() {
           console.error(e);
           setProgress(100);
           loadingBarRef.current?.complete();
-          navigate("/login");
+          navigate("/");
         }
       };
 
