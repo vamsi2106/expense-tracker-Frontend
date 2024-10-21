@@ -59,9 +59,8 @@ function Runway() {
 
           const { token, role, username, userEmail, userid, userImageUrl } =
             response.data;
-          
-            
-          setCookie("userId", userid)
+
+          setCookie("userId", userid);
           setCookie("token", token, 3);
           setCookie("role", role, 3);
 

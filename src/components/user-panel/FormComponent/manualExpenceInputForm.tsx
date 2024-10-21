@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
@@ -22,8 +22,6 @@ const ManualExpenseInputForm: React.FC<ManualExpenseInputFormProps> = ({
   id,
   name,
 }) => {
-  // Define Yup validation schema
-  console.log(id, name);
   const validationSchema = Yup.object({
     name: Yup.string().required("Name field is required"),
     category: Yup.string().required("Category is required"),
@@ -34,17 +32,15 @@ const ManualExpenseInputForm: React.FC<ManualExpenseInputFormProps> = ({
   });
 
   const dispatch = useDispatch();
-  const data = useSelector((state: any) => state.expenses);
-  console.log(data);
+  const { expense, page_status, message } = useSelector(
+    (state: any) => state.expenses
+  );
   const pageStatusObject = new PageStatus();
   const messageColor =
-    data.page_status === pageStatusObject.success
-      ? "text-success"
-      : "text-danger";
+    page_status === pageStatusObject.success ? "text-success" : "text-danger";
 
   // Function to add or update expenses
   const addExpenses = async (values: any) => {
-    console.log("function triggerd");
     try {
       let resultAction;
       if (!isUpdate) {
@@ -53,10 +49,9 @@ const ManualExpenseInputForm: React.FC<ManualExpenseInputFormProps> = ({
           await dispatch<any>(fetchExpenses());
         }
       } else {
-        console.log(id, name);
         resultAction = await dispatch<any>(
           updateExpense({ id, updateDetails: values })
-        ); // Ensure correct argument structure
+        );
         if (updateExpense.fulfilled.match(resultAction)) {
           await dispatch<any>(fetchExpenses());
         }
@@ -66,10 +61,6 @@ const ManualExpenseInputForm: React.FC<ManualExpenseInputFormProps> = ({
     }
   };
 
-  const { expense } = useSelector((state: any) => state.expenses);
-  console.log(expense);
-
-  // Use Formik for form handling
   const formik = useFormik({
     initialValues: {
       name: isUpdate ? expense?.name : "",
@@ -79,7 +70,6 @@ const ManualExpenseInputForm: React.FC<ManualExpenseInputFormProps> = ({
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      console.log(values);
       const formattedDate = values.date ? values.date.replace(/-/g, "/") : "";
       const customValues = {
         name: values.name,
@@ -90,6 +80,18 @@ const ManualExpenseInputForm: React.FC<ManualExpenseInputFormProps> = ({
       addExpenses(customValues);
     },
   });
+
+  // Update form values when expense data changes
+  useEffect(() => {
+    if (isUpdate && expense) {
+      formik.setValues({
+        name: expense.name || "",
+        category: expense.category || "",
+        amount: expense.amount || "",
+        date: expense.date || "",
+      });
+    }
+  }, [expense, isUpdate]);
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -199,7 +201,7 @@ const ManualExpenseInputForm: React.FC<ManualExpenseInputFormProps> = ({
       >
         Submit
       </button>
-      <p className={messageColor}>{data.message}</p>
+      <p className={messageColor}>{message}</p>
     </form>
   );
 };
