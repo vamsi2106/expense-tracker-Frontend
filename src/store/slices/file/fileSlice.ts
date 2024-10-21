@@ -5,6 +5,9 @@ interface File {
   id: string;
   name: string;
   uploadDate: string;
+  originalFileName: string;
+  createdAt: string;
+  fileUrl: string;
 }
 
 interface FilesState {
@@ -32,7 +35,12 @@ export const createFile = createAsyncThunk(
   async ({ userId, fileData }: { userId: string; fileData: FormData }) => {
     const response = await axiosInstance.post(
       `/users/${userId}/files/upload`,
-      fileData
+      fileData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
     return response.data;
   }

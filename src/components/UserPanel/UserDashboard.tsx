@@ -15,12 +15,10 @@ import ExpensesSection from "../../components/UserPanel/ExpenseSection";
 import FilesSection from "../../components/UserPanel/FilesSection";
 import CategoriesSection from "../../components/UserPanel/CategoriesSection";
 import TagsSection from "../../components/UserPanel/TagsSection";
-import RecurringExpensesSection from "../../components/UserPanel/RecurringExpensesSection";
 import { fetchExpenses } from "../../store/slices/expenses/expenses.slice";
 import { fetchFiles } from "../../store/slices/file/fileSlice";
 import { fetchCategories } from "../../store/slices/category/categorySlice";
 import { fetchTags } from "../../store/slices/tag/tagSlice";
-import { fetchRecurringExpenses } from "../../store/recurringExpensesSlice";
 import Navbar1 from "./Navbar";
 import "./User.css";
 
@@ -34,7 +32,6 @@ const UserDashboard: React.FC = () => {
       dispatch(fetchFiles({ userId }));
       dispatch(fetchCategories(userId));
       dispatch(fetchTags(userId));
-      dispatch(fetchRecurringExpenses(userId));
     }
   }, [dispatch, userId]);
 
@@ -51,10 +48,6 @@ const UserDashboard: React.FC = () => {
               <Route path="files" element={<FilesSection />} />
               <Route path="categories" element={<CategoriesSection />} />
               <Route path="tags" element={<TagsSection />} />
-              <Route
-                path="recurring-expenses"
-                element={<RecurringExpensesSection />}
-              />
             </Routes>
           </div>
         </main>

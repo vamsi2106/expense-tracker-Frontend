@@ -22,7 +22,7 @@ const initialState: CategoriesState = {
 export const fetchCategories = createAsyncThunk(
   "categories/fetchCategories",
   async (userId: string) => {
-    const response = await axiosInstance.get(`/expenses/categories`);
+    const response = await axiosInstance.get(`/expenses/categories/users`);
     return response.data;
   }
 );
@@ -35,6 +35,14 @@ export const createCategory = createAsyncThunk(
       categoryData
     );
     return response.data;
+  }
+);
+
+export const deleteCategory = createAsyncThunk(
+  "categories/deleteCategory",
+  async ({ userId, id }: { userId: string; id: string }) => {
+    await axiosInstance.delete(`/expenses/categories/${id}`);
+    return id;
   }
 );
 
@@ -57,6 +65,11 @@ const categoriesSlice = createSlice({
       })
       .addCase(createCategory.fulfilled, (state, action) => {
         state.categories.push(action.payload as Category);
+      })
+      .addCase(deleteCategory.fulfilled, (state, action) => {
+        state.categories = state.categories.filter(
+          (category) => category.id !== action.payload
+        );
       });
   },
 });

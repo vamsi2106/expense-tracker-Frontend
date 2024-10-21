@@ -34,12 +34,12 @@ const Sidebar: React.FC = () => {
         <Menu.Item key="4" icon={<FaList />}>
           <Link to="/user/categories">Categories</Link>
         </Menu.Item>
-        <Menu.Item key="5" icon={<FaTags />}>
+        {/* <Menu.Item key="5" icon={<FaTags />}>
           <Link to="/user/tags">Tags</Link>
         </Menu.Item>
         <Menu.Item key="6" icon={<FaCalendarAlt />}>
           <Link to="/user/recurring-expenses">Recurring Expenses</Link>
-        </Menu.Item>
+        </Menu.Item> */}
         <Menu.Item key="6">
           <Logout />
         </Menu.Item>

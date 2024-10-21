@@ -8,12 +8,14 @@ import {
   createFile,
   deleteFile,
 } from "../../store/slices/file/fileSlice";
+import { Spin } from "antd"; // Import Spin component from Ant Design
 import "./User.css";
 
 interface FileData {
   id: string;
-  name: string;
-  uploadDate: string;
+  originalFileName: string;
+  createdAt: string;
+  fileUrl: string;
 }
 
 const FilesSection: React.FC = () => {
@@ -21,14 +23,9 @@ const FilesSection: React.FC = () => {
   const { files, page_status, message } = useSelector(
     (state: RootState) => state.files
   );
+
   const userId = useSelector((state: RootState) => state.user.userid);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-  useEffect(() => {
-    if (page_status === "loading") {
-      toast.warning("Loading...", { autoClose: 3000 });
-    }
-  }, [page_status]);
 
   useEffect(() => {
     if (userId) {
@@ -42,20 +39,28 @@ const FilesSection: React.FC = () => {
     }
   };
 
-  const handleUploadFile = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleUploadFile = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (selectedFile && userId) {
       const formData = new FormData();
       formData.append("file", selectedFile);
-      dispatch(createFile({ userId, fileData: formData }));
-      toast.success("File uploaded successfully!");
-      setSelectedFile(null);
+      dispatch(createFile({ userId, fileData: formData }))
+        .then(() => {
+          dispatch(fetchFiles({ userId }));
+          toast.success("File uploaded successfully!");
+          setSelectedFile(null);
+        })
+        .catch(() => {
+          toast.error("Failed to add Expenses .");
+          setSelectedFile(null);
+        });
     }
   };
 
   const handleDeleteFile = (id: string) => {
     if (userId) {
       dispatch(deleteFile({ userId, id }));
+      dispatch(fetchFiles({ userId }));
       toast.error("File deleted!");
     }
   };
@@ -70,31 +75,36 @@ const FilesSection: React.FC = () => {
           Upload File
         </button>
       </form>
-      <table className="files-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Upload Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {files.map((file: FileData) => (
-            <tr key={file.id}>
-              <td>{file.name}</td>
-              <td>{new Date(file.uploadDate).toDateString()}</td>
-              <td>
-                <button
-                  onClick={() => handleDeleteFile(file.id)}
-                  className="btn-icon delete"
-                >
-                  Delete
-                </button>
-              </td>
+
+      {page_status === "loading" ? ( // Show loading spinner while loading
+        <Spin size="large" />
+      ) : (
+        <table className="files-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Upload Date</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {files.map((file) => (
+              <tr key={file.id}>
+                <td>{file.originalFileName}</td>
+                <td>{new Date(file.createdAt).toDateString()}</td>
+                <td>
+                  <button
+                    onClick={() => handleDeleteFile(file.id)}
+                    className="btn-icon delete"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };

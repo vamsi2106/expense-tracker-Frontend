@@ -19,9 +19,6 @@ const DashboardContent: React.FC = () => {
     (state: RootState) => state.categories.categories
   );
   const tags = useSelector((state: RootState) => state.tags.tags);
-  const recurringExpenses = useSelector(
-    (state: RootState) => state.recurringExpenses.recurringExpenses
-  );
 
   const data = expenses.map((expense) => ({
     name: expense.name,

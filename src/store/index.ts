@@ -6,7 +6,6 @@ import usersListReducer from "./slices/user/usersListSlice";
 import expenseReducer from "./slices/expenses/expenses.slice";
 import categoryReducer from "./slices/category/categorySlice";
 import tagReducer from "./slices/tag/tagSlice";
-import recurringExpenseReducer from "./recurringExpensesSlice";
 import filesReducer from "./slices/file/fileSlice";
 
 const persistConfig = {
@@ -23,7 +22,6 @@ const store = configureStore({
     expenses: expenseReducer,
     categories: categoryReducer,
     tags: tagReducer,
-    recurringExpenses: recurringExpenseReducer,
     files: filesReducer,
   },
 });

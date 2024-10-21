@@ -2,21 +2,24 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../../services/axios";
 
 interface Expense {
+  category_name: string;
   id: string;
   name: string;
   amount: number;
   category: string;
   date: string;
+  transaction_type: string;
+  currency: string;
 }
 
 interface ExpensesState {
   expenses: Expense[];
   page_status: string;
   message: string;
-  expensesGroupedByCategory: any[];
-  expensesGroupedByWeek: any[];
-  expensesGroupedByMonth: any[];
-  expensesGroupedByDate: any[];
+  expensesGroupedByCategory: { category: string; amount: number }[];
+  expensesGroupedByWeek: { week: string; amount: number }[];
+  expensesGroupedByMonth: { month: string; amount: number }[];
+  expensesGroupedByDate: { date: string; amount: number }[];
 }
 
 const initialState: ExpensesState = {
@@ -50,7 +53,6 @@ export const createExpense = createAsyncThunk(
         ...expenseData,
         userId, // Include userId in the request body
       });
-      console.log("response/....", response);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data); // Return error for rejection
@@ -149,23 +151,28 @@ const expensesSlice = createSlice({
     builder
       .addCase(fetchExpenses.pending, (state) => {
         state.page_status = "loading";
+        console.log("Fetching expenses...");
       })
       .addCase(fetchExpenses.fulfilled, (state, action) => {
         state.page_status = "succeeded";
         state.expenses = action.payload as Expense[];
+        console.log("Expenses fetched successfully:", action.payload);
       })
       .addCase(fetchExpenses.rejected, (state, action) => {
         state.page_status = "failed";
         state.message = action.error.message || "Failed to fetch expenses";
+        console.error("Failed to fetch expenses:", action.error.message);
       })
       .addCase(createExpense.fulfilled, (state, action) => {
         state.expenses.push(action.payload as Expense);
-        state.message = "Expense created successfully"; // Feedback message
+        state.message = "Expense created successfully";
+        console.log("Expense created successfully:", action.payload);
       })
       .addCase(createExpense.rejected, (state, action) => {
         state.page_status = "failed";
         state.message =
           (action.payload as string) || "Failed to create expense";
+        console.error("Failed to create expense:", action.payload);
       })
       .addCase(updateExpense.fulfilled, (state, action) => {
         const index = state.expenses.findIndex(
@@ -173,36 +180,56 @@ const expensesSlice = createSlice({
         );
         if (index !== -1) {
           state.expenses[index] = action.payload as Expense;
-          state.message = "Expense updated successfully"; // Feedback message
+          state.message = "Expense updated successfully";
+          console.log("Expense updated successfully:", action.payload);
         }
       })
       .addCase(updateExpense.rejected, (state, action) => {
         state.page_status = "failed";
         state.message =
           (action.payload as string) || "Failed to update expense";
+        console.error("Failed to update expense:", action.payload);
       })
       .addCase(deleteExpense.fulfilled, (state, action) => {
         state.expenses = state.expenses.filter(
           (expense) => expense.id !== action.payload
         );
-        state.message = "Expense deleted successfully"; // Feedback message
+        state.message = "Expense deleted successfully";
+        console.log("Expense deleted successfully:", action.payload);
       })
       .addCase(deleteExpense.rejected, (state, action) => {
         state.page_status = "failed";
         state.message =
           (action.payload as string) || "Failed to delete expense";
+        console.error("Failed to delete expense:", action.payload);
       })
       .addCase(fetchExpensesGroupedByCategory.fulfilled, (state, action) => {
         state.expensesGroupedByCategory = action.payload as any[];
+        console.log(
+          "Expenses grouped by category fetched successfully:",
+          action.payload
+        );
       })
       .addCase(fetchExpensesGroupedByWeek.fulfilled, (state, action) => {
         state.expensesGroupedByWeek = action.payload as any[];
+        console.log(
+          "Expenses grouped by week fetched successfully:",
+          action.payload
+        );
       })
       .addCase(fetchExpensesGroupedByMonth.fulfilled, (state, action) => {
         state.expensesGroupedByMonth = action.payload as any[];
+        console.log(
+          "Expenses grouped by month fetched successfully:",
+          action.payload
+        );
       })
       .addCase(fetchExpensesGroupedByDate.fulfilled, (state, action) => {
         state.expensesGroupedByDate = action.payload as any[];
+        console.log(
+          "Expenses grouped by date fetched successfully:",
+          action.payload
+        );
       });
   },
 });

@@ -12,7 +12,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import Toast CSS
 import { Modal, Button } from "antd";
 import "./RegisterUser.css"; // Custom CSS
-import { registerUser } from "../../../services/user.services";
+import { registerUser, checkEmail } from "../../../services/user.services";
 
 const RegisterUser: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -32,6 +32,7 @@ const RegisterUser: React.FC = () => {
   // Validate email domain
   const validateEmailDomain = (email: string) => {
     const emailDomain = email.split("@")[1];
+    console.log(emailDomain, " --- ", orgEmailDomain);
     if (emailDomain !== orgEmailDomain) {
       setEmailError(`Invalid email id. Please use a ${orgEmailDomain} email.`);
       return false;
@@ -81,21 +82,22 @@ const RegisterUser: React.FC = () => {
 
   const registerUserHandler = async () => {
     try {
-      await registerUser({ username, email, role, userImageUrl });
-      toast.success("User registered and invitation sent successfully.");
-      setUsername("");
-      setEmail("");
-      setRole("user");
-      setuserImageUrl("");
+      const response: any = await checkEmail(email);
+      console.log("fetching user login page", response);
+      if (response.userFound !== false) {
+        toast.error("User already exists.");
+        return;
+      } else {
+        await registerUser({ username, email, role, userImageUrl });
+        toast.success("User registered and invitation sent successfully.");
+        setUsername("");
+        setEmail("");
+        setRole("user");
+        setuserImageUrl("");
+      }
     } catch (error) {
       toast.error("Failed to register user or send invitation.");
     }
-  };
-
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const email = e.target.value;
-    setEmail(email);
-    validateEmailDomain(email);
   };
 
   return (
@@ -143,7 +145,7 @@ const RegisterUser: React.FC = () => {
           <input
             type="email"
             value={email}
-            onChange={handleEmailChange}
+            onChange={(e) => setEmail(e.target.value)}
             required
             className="input-field"
             placeholder="Email"

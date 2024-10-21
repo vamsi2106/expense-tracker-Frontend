@@ -4,17 +4,25 @@ import { RootState, AppDispatch } from "../../store";
 import {
   fetchCategories,
   createCategory,
+  deleteCategory,
 } from "../../store/slices/category/categorySlice";
 import { Table, Button, Modal, Form, Input, Select } from "antd";
+import { FaTrash } from "react-icons/fa";
 
 const { Option } = Select;
+
+interface Category {
+  id: string;
+  name: string;
+  type: "income" | "expense";
+}
 
 const CategoriesSection: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { categories, status } = useSelector(
     (state: RootState) => state.categories
   );
-  const userId: any = useSelector((state: RootState) => state.user.userid);
+  const userId = useSelector((state: RootState) => state.user.userid);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
@@ -26,6 +34,19 @@ const CategoriesSection: React.FC = () => {
   const columns = [
     { title: "Name", dataIndex: "name", key: "name" },
     { title: "Type", dataIndex: "type", key: "type" },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (text: string, record: Category) => (
+        <Button
+          type="link"
+          icon={<FaTrash />}
+          onClick={() => handleDeleteCategory(record.id)}
+        >
+          Delete
+        </Button>
+      ),
+    },
   ];
 
   const showModal = () => {
@@ -37,8 +58,21 @@ const CategoriesSection: React.FC = () => {
   };
 
   const handleCreateCategory = (values: any) => {
-    dispatch(createCategory({ userId, categoryData: values }));
-    setIsModalVisible(false);
+    if (userId) {
+      dispatch(createCategory({ userId, categoryData: values }));
+      setIsModalVisible(false);
+    }
+  };
+
+  const handleDeleteCategory = (id: string) => {
+    if (userId) {
+      dispatch(deleteCategory({ userId, id }))
+        .unwrap()
+        .then(() => {
+          // Optionally, you could also refetch the expenses here
+          dispatch(fetchCategories(userId)); // Refresh categories
+        });
+    }
   };
 
   return (
