@@ -27,7 +27,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     // Redirect to a route based on the user's role
     // For example, if the user is an admin but tries to access a user page
     if (userRole === "admin") {
-      return <Navigate to="/admin" />;
+      return <Navigate to="/user" />;
     } else if (userRole === "user") {
       return <Navigate to="/user" />;
     } else {
