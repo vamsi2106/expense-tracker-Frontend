@@ -1,6 +1,27 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../../services/axios";
 
+// Define the structure for grouped data responses
+interface GroupedByCategory {
+  category_name: string;
+  total_amount: number;
+}
+
+interface GroupedByWeek {
+  week: string;
+  total_amount: number;
+}
+
+interface GroupedByMonth {
+  month: string;
+  total_amount: any;
+}
+
+interface GroupedByDate {
+  date: string;
+  total_amount: number;
+}
+
 interface Expense {
   category_name: string;
   id: string;
@@ -18,7 +39,11 @@ interface ExpensesState {
   message: string;
   expensesGroupedByCategory: { category: string; amount: number }[];
   expensesGroupedByWeek: { week: string; amount: number }[];
-  expensesGroupedByMonth: { month: string; amount: number }[];
+  expensesGroupedByMonth: {
+    total_amount: any;
+    month: string;
+    amount: number;
+  }[];
   expensesGroupedByDate: { date: string; amount: number }[];
 }
 
@@ -106,7 +131,7 @@ export const fetchExpensesGroupedByCategory = createAsyncThunk(
     const response = await axiosInstance.get(
       `/tracker/expenses/filter/group-by-category`
     );
-    return response.data;
+    return response.data as GroupedByCategory[];
   }
 );
 
@@ -117,7 +142,7 @@ export const fetchExpensesGroupedByWeek = createAsyncThunk(
     const response = await axiosInstance.get(
       `/tracker/expenses/filter/group-by-week`
     );
-    return response.data;
+    return response.data as GroupedByWeek[];
   }
 );
 
@@ -128,7 +153,7 @@ export const fetchExpensesGroupedByMonth = createAsyncThunk(
     const response = await axiosInstance.get(
       `/tracker/expenses/filter/group-by-month`
     );
-    return response.data;
+    return response.data as GroupedByMonth[];
   }
 );
 
@@ -139,7 +164,7 @@ export const fetchExpensesGroupedByDate = createAsyncThunk(
     const response = await axiosInstance.get(
       `/tracker/expenses/filter/group-by-date`
     );
-    return response.data;
+    return response.data as GroupedByDate[];
   }
 );
 
@@ -204,31 +229,67 @@ const expensesSlice = createSlice({
         console.error("Failed to delete expense:", action.payload);
       })
       .addCase(fetchExpensesGroupedByCategory.fulfilled, (state, action) => {
-        state.expensesGroupedByCategory = action.payload as any[];
-        console.log(
-          "Expenses grouped by category fetched successfully:",
-          action.payload
+        console.log("API response - Category Grouping:", action.payload);
+        state.expensesGroupedByCategory = (
+          action.payload as GroupedByCategory[]
+        ).map((item) => ({
+          category: item.category_name,
+          amount: item.total_amount,
+        }));
+        console.log("Expenses grouped by category stored successfully.");
+      })
+      .addCase(fetchExpensesGroupedByCategory.rejected, (state, action) => {
+        console.error(
+          "Failed to fetch expenses by category:",
+          action.error.message
         );
       })
       .addCase(fetchExpensesGroupedByWeek.fulfilled, (state, action) => {
-        state.expensesGroupedByWeek = action.payload as any[];
-        console.log(
-          "Expenses grouped by week fetched successfully:",
-          action.payload
+        console.log("API response - Week Grouping:", action.payload);
+        state.expensesGroupedByWeek = (action.payload as GroupedByWeek[]).map(
+          (item) => ({
+            week: item.week,
+            amount: item.total_amount,
+          })
+        );
+        console.log("Expenses grouped by week stored successfully.");
+      })
+      .addCase(fetchExpensesGroupedByWeek.rejected, (state, action) => {
+        console.error(
+          "Failed to fetch expenses by week:",
+          action.error.message
         );
       })
       .addCase(fetchExpensesGroupedByMonth.fulfilled, (state, action) => {
-        state.expensesGroupedByMonth = action.payload as any[];
-        console.log(
-          "Expenses grouped by month fetched successfully:",
-          action.payload
+        console.log("API response - Month Grouping:", action.payload);
+        state.expensesGroupedByMonth = (action.payload as any).map(
+          (item: any) => ({
+            month: item.month,
+            amount: item.total_amount,
+          })
+        );
+        console.log("Expenses grouped by month stored successfully.");
+      })
+      .addCase(fetchExpensesGroupedByMonth.rejected, (state, action) => {
+        console.error(
+          "Failed to fetch expenses by month:",
+          action.error.message
         );
       })
       .addCase(fetchExpensesGroupedByDate.fulfilled, (state, action) => {
-        state.expensesGroupedByDate = action.payload as any[];
-        console.log(
-          "Expenses grouped by date fetched successfully:",
-          action.payload
+        console.log("API response - Date Grouping:", action.payload);
+        state.expensesGroupedByDate = (action.payload as GroupedByDate[]).map(
+          (item) => ({
+            date: item.date,
+            amount: item.total_amount,
+          })
+        );
+        console.log("Expenses grouped by date stored successfully.");
+      })
+      .addCase(fetchExpensesGroupedByDate.rejected, (state, action) => {
+        console.error(
+          "Failed to fetch expenses by date:",
+          action.error.message
         );
       });
   },
