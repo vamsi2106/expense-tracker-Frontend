@@ -1,9 +1,0 @@
-.align-between{
-    display:flex;
-    justify-content:space-between;
-    width:80%;
-}
-.pie-chart{
-    width:50%;
-    height:50%;
-}

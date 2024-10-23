@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { setCookie, removeCookie } from "../../utils/cookieUtils";
 import { useDispatch } from "react-redux";
-import { setUser } from "../../store/userSlice";
+import { setUser } from "../../store/slices/user/userSlice";
 import LoadingBar, { LoadingBarRef } from "react-top-loading-bar";
 import { Grid } from "react-loader-spinner";
 
@@ -59,6 +59,23 @@ function Runway() {
 
           const { token, role, username, userEmail, userid, userImageUrl } =
             response.data;
+
+          console.log("response", response);
+
+          if (response.data.error && response.data.redirect) {
+            // Automatically log out from both Microsoft and your app if user is not found
+            removeCookie("token");
+            removeCookie("role");
+            localStorage.clear();
+            sessionStorage.clear();
+
+            // Redirect to Microsoft logout URL to clear SSO session and prompt for account selection
+            window.location.href = microsoftLogoutUrl;
+            return;
+          }
+
+          // const { token, role, username, userEmail, userid, userImageUrl } =
+          //   response.data;
 
           setCookie("userId", userid);
           setCookie("token", token, 3);

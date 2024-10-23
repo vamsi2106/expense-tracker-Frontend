@@ -17,6 +17,12 @@ export const registerUser = async (userData: {
   return response.data;
 };
 
+export const checkUserExists = async (email: string): Promise<boolean> => {
+  const response: any = await axios.get(`/users/exists?email=${email}`);
+  console.log("existed data...", response);
+  return response.data.exists;
+};
+
 export const fetchUsers = async (): Promise<User[]> => {
   const response = await axiosInstance.get<User[]>("/users");
   return response.data;

@@ -3,13 +3,12 @@ import React, { useState, useEffect } from "react";
 import { Link, Routes, Route, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../store";
-import { fetchUsers } from "../../store/usersListSlice";
-import { FaUserPlus, FaUsers, FaSignOutAlt } from "react-icons/fa";
+import { fetchUsers } from "../../store/slices/user/usersListSlice";
+import { FaUserPlus, FaUsers, FaSignOutAlt, FaHouseUser } from "react-icons/fa";
 import Logout from "../authentication/Logout";
 import RegisterUser from "./RegisterUser/RegisterUser";
 import UsersList from "../admin/UsersList/UsersList";
 import "./admin.css";
-import NotFound from "./Not-Found";
 import HomePage from "./HomePage/HomePage";
 
 const AdminDashboard: React.FC = () => {
@@ -26,6 +25,7 @@ const AdminDashboard: React.FC = () => {
   }, [dispatch]);
 
   const navItems = [
+    { path: "/admin/", icon: <FaHouseUser />, text: "Dashboard" },
     { path: "/admin/register", icon: <FaUserPlus />, text: "Register User" },
     { path: "/admin/users", icon: <FaUsers />, text: "Users List" },
   ];
@@ -44,7 +44,10 @@ const AdminDashboard: React.FC = () => {
           </h1>
           <img
             className="admin-profile-img"
-            src={user.profileImg ?? "default-image-url.jpg"}
+            src={
+              user.profileImg ??
+              "https://www.freepnglogos.com/uploads/student-png/student-png-sammilani-mahavidyalaya-undergraduate-and-24.png"
+            }
           />
           <div>
             <strong className="admin-subtitle">{user.username}</strong>
@@ -71,11 +74,12 @@ const AdminDashboard: React.FC = () => {
         </ul>
       </nav>
       <div className="admin-content">
-        <header className="content-header">
+        <header className="content-header-1">
           <h2>Expenses Tracker Admin Dashboard</h2>
         </header>
         <main className="content-main">
           <Routes>
+            <Route path="/" element={<HomePage />} />
             <Route path="register" element={<RegisterUser />} />
             <Route path="users" element={<UsersList />} />
           </Routes>

@@ -1,22 +1,37 @@
-import React, { useEffect } from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+// src/routes/AppRoutes.tsx
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Home from "../components/admin/HomePage/HomePage";
 import LoginPage from "../components/authentication/LoginPage";
 import Runway from "../components/authentication/Runaway";
-import UserDashboard from "../components/user-panel/user/UserDashboard";
+//import AdminDashboard from "../components/admin/AdminDashboard"; // Import your Admin Dashboard component
+import UserDashboard from "../components/UserPanel/UserDashboard"; // Import your User Dashboard component
 import ProtectedRoute from "./ProtectedRoute";
 import AdminPanel from "../components/admin/AdminDashboard";
-import { ExpensesHome } from "../screen/Home/ExpensesHome";
-import { Dashboard } from "../screen/Dashboard/dashboard";
+// import { ExpensesHome } from "../screen/Home/ExpensesHome";
+// import { Dashboard } from "../screen/Dashboard/dashboard";
 import NotFound from "../components/admin/Not-Found";
-
-// Mock function to get token and user role
-const getToken = () => localStorage.getItem("token");
-const getUserRole = () => localStorage.getItem("userRole");
+import { getCookie } from "../utils/cookieUtils";
+import { DownloadFile } from "../exportDataFeauture/Download";
 
 const AppRoutes: React.FC = () => {
+  const userRole = getCookie("role");
   return (
     <Routes>
-      <Route path="/" element={<LoginPage />} />
+      {/* Root route to redirect based on user role */}
+      <Route
+        path="/"
+        element={
+          userRole === "admin" ? (
+            <Navigate to="/admin" />
+          ) : userRole === "user" ? (
+            <Navigate to="/user" />
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/runway" element={<Runway />} />
       {/* Admin routes */}
       <Route
@@ -33,17 +48,10 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route path="*" element={<NotFound />} />
-      {/* Additional protected routes */}
-      <Route
-        path="/user/home"
-        element={
-          <ProtectedRoute element={<ExpensesHome />} requiredRole="user" />
-        }
-      />
-      <Route
-        path="/user/dashboard"
-        element={<ProtectedRoute element={<Dashboard />} requiredRole="user" />}
-      />
+      {/* Add more protected routes as needed */}
+      {/*Routes added by nagasritha*/}
+      {/*temp route*/}
+      <Route path="/downloadfile" element={<DownloadFile />} />
     </Routes>
   );
 };

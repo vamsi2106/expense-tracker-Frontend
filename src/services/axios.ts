@@ -7,13 +7,12 @@ const axiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 10000,
+  timeout: 20000,
 });
 
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = getCookie("token"); // Get token from cookies
-    console.log("user token", token)
     if (token) {
       config.headers = config.headers || {}; // Ensure headers is an object
       config.headers.Authorization = `Bearer ${token}`;

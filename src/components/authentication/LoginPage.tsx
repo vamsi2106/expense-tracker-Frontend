@@ -6,7 +6,6 @@ import "../../assets/styles/auth.css";
 import microsoft from "../../assets/images/microsoft.png";
 import loginImg from "../../assets/images/logInImg.png";
 import LoadingBar, { LoadingBarRef } from "react-top-loading-bar";
-import axios from "axios"; // Import axios for API calls
 import { toast, ToastContainer } from "react-toastify"; // Import toast for notifications
 import "react-toastify/dist/ReactToastify.css";
 import { checkEmail } from "../../services/user.services";
@@ -74,10 +73,7 @@ export default function LoginPage() {
           <div className="login-overlay">
             <div className="login-overlay-panel login-overlay-right">
               <strong className="login-e1">Expenses Tracker</strong>
-              <h1 style={{color: "whitesmoke"}}>Welcome Back!</h1>
-              <p>
-                To keep connected with us, please login with your personal info
-              </p>
+              <h1>Welcome Back!</h1>
               <div className="email-input-control">
                 <input
                   type="email"
@@ -87,11 +83,14 @@ export default function LoginPage() {
                   required
                 />
                 <label>
-                  <span style={{ transitionDelay: "0ms" }}>E</span>
-                  <span style={{ transitionDelay: "50ms" }}>m</span>
-                  <span style={{ transitionDelay: "100ms" }}>a</span>
-                  <span style={{ transitionDelay: "150ms" }}>i</span>
-                  <span style={{ transitionDelay: "200ms" }}>l</span>
+                  <span style={{ transitionDelay: "0ms" }}>U</span>
+                  <span style={{ transitionDelay: "50ms" }}>s</span>
+                  <span style={{ transitionDelay: "100ms" }}>e</span>
+                  <span style={{ transitionDelay: "150ms" }}>r</span>
+                  <span style={{ transitionDelay: "200ms" }}>n</span>
+                  <span style={{ transitionDelay: "250ms" }}>a</span>
+                  <span style={{ transitionDelay: "300ms" }}>m</span>
+                  <span style={{ transitionDelay: "350ms" }}>e</span>
                 </label>
               </div>
 

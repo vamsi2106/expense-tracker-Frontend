@@ -1,79 +1,43 @@
-/* src/components/admin/UsersList.css */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+.custom-table {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-th,
-td {
-  border: 1px solid #ddd;
-  padding: 12px;
-  text-align: left;
-}
-
-th {
-  background-color: #f4f4f4;
-  color: #333;
-}
-
-tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-tbody tr:hover {
-  background-color: #f1f1f1;
-}
-
-h2 {
-  color: #333;
-}
-
-.Toastify__toast-container {
-  z-index: 9999 !important;
-}
-
-/* Button Styles */
-.delete-btn {
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.confirm-btn {
-  background-color: #27ae60;
-  color: white;
-  padding: 10px 15px;
-  margin-right: 10px;
-}
-
-.cancel-btn {
-  background-color: #c0392b;
-  color: white;
-  padding: 10px 15px;
-}
-
-/* Modal Styles */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+.custom-pagination {
   display: flex;
   justify-content: center;
-  align-items: center;
+  margin-top: 16px;
 }
 
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
+.search-input {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 16px;
+}
+
+.ant-table-thead > tr > th {
+  background-color: #fafafa;
+  font-weight: bold;
+}
+
+.ant-table-tbody > tr > td {
+  padding: 12px 8px;
+}
+
+.ant-modal-content {
+  border-radius: 8px;
+}
+
+.ant-modal-header {
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+}
+
+.ant-modal-footer {
+  border-top: none;
+}
+
+.ant-pagination-item a {
+  margin: 0px !important;
 }

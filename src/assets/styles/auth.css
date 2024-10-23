@@ -4,17 +4,15 @@
   box-sizing: border-box;
 }
 
-
-
 .logout-btn {
   border: 0px;
-  width: 10%;
+  width: 100%;
   font-weight: bold;
   display: flex;
   justify-content: center;
   align-items: center;
   color: #ffffff;
-  background-color: #000000;
+  background-color: #3a3a3ad3;
   text-decoration: none;
   padding: 10px;
   border-radius: 5px;
@@ -39,7 +37,7 @@
   width: 190px;
 }
 .email-input-control input {
-  background-color: transparent;
+  background-color: transparent !important;
   border: 0;
   border-bottom: 2px #fff solid;
   display: block;

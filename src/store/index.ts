@@ -2,14 +2,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import userReducer from "./userSlice";
-import usersListReducer from "./usersListSlice"; // Your users list slice
-import { expensesReducer } from "./expenses.slice";
-import { filesReducer } from "./files.slice";
-
-// Define the store's dispatch type
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch; // Add this line
+import userReducer from "./slices/user/userSlice";
+import usersListReducer from "./slices/user/usersListSlice";
+import expenseReducer from "./slices/expenses/expenses.slice";
+import categoryReducer from "./slices/category/categorySlice";
+import tagReducer from "./slices/tag/tagSlice";
+import filesReducer from "./slices/file/fileSlice";
 
 const persistConfig = {
   key: "root",
@@ -22,10 +20,14 @@ const store = configureStore({
   reducer: {
     user: persistedUserReducer,
     usersList: usersListReducer,
-    expenses: expensesReducer, // Add your slices here
-    files : filesReducer// Add your new slice here
+    expenses: expenseReducer,
+    categories: categoryReducer,
+    tags: tagReducer,
+    files: filesReducer,
   },
 });
 
 export const persistor = persistStore(store);
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 export default store;
